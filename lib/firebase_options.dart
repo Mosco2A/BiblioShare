@@ -57,10 +57,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA2-1VclCoqT7UuExZl1NPpz9MI5GrHhHY',
-    appId: '1:658910498061:android:e64a97b39e885b42faf444',
+    appId: '1:658910498061:android:21fe2603c3d55791faf444',
     messagingSenderId: '658910498061',
     projectId: 'biblio-share-qdbtjz',
     storageBucket: 'biblio-share-qdbtjz.appspot.com',
+    androidClientId: '658910498061-t4i1iuemvmlloo2b4s0nh9lftq4i2enr.apps.googleusercontent.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -71,7 +72,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'biblio-share-qdbtjz.appspot.com',
     androidClientId: '658910498061-691r8dpki902vpr5c9fbkni3jd8j4h2a.apps.googleusercontent.com',
     iosClientId: '658910498061-der58gd1q8hnlpghoojm0n8qeberslts.apps.googleusercontent.com',
-    iosBundleId: 'com.biblioshare.biblioshare',
+    iosBundleId: 'com.only1cent.biblioshare',
   );
 
 }

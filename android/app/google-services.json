@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "658910498061-cq2urm232uqq4id6k8c5d3gmku9ar2je.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.biblioshare.biblioshare",
+            "certificate_hash": "eb3c976eed14834f183cf64c0d56f0c72c116d90"
+          }
+        },
+        {
           "client_id": "658910498061-fu0aou71d17qhiehnbr8hq7h8pn9fltj.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -55,6 +63,58 @@
           "android_info": {
             "package_name": "com.mycompany.biblioshare",
             "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "658910498061-rr2g3ljpp1rcck738rq7alublkcljkp0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.biblioshare",
+            "certificate_hash": "eb3c976eed14834f183cf64c0d56f0c72c116d90"
+          }
+        },
+        {
+          "client_id": "658910498061-fu0aou71d17qhiehnbr8hq7h8pn9fltj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2-1VclCoqT7UuExZl1NPpz9MI5GrHhHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "658910498061-fu0aou71d17qhiehnbr8hq7h8pn9fltj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "658910498061-der58gd1q8hnlpghoojm0n8qeberslts.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.biblioshare.biblioshare"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658910498061:android:21fe2603c3d55791faf444",
+        "android_client_info": {
+          "package_name": "com.only1cent.biblioshare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "658910498061-t4i1iuemvmlloo2b4s0nh9lftq4i2enr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.only1cent.biblioshare",
+            "certificate_hash": "eb3c976eed14834f183cf64c0d56f0c72c116d90"
           }
         },
         {
