@@ -69,6 +69,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '658910498061',
     projectId: 'biblio-share-qdbtjz',
     storageBucket: 'biblio-share-qdbtjz.appspot.com',
+    androidClientId: '658910498061-691r8dpki902vpr5c9fbkni3jd8j4h2a.apps.googleusercontent.com',
+    iosClientId: '658910498061-der58gd1q8hnlpghoojm0n8qeberslts.apps.googleusercontent.com',
     iosBundleId: 'com.biblioshare.biblioshare',
   );
+
 }
