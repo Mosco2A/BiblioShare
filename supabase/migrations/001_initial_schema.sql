@@ -357,8 +357,10 @@ CREATE TABLE scan_results (
 -- Livres de mes amis
 CREATE VIEW v_friends_books AS
 SELECT
-  f.requester_id AS user_id,
-  b.*,
+  f.requester_id AS viewer_id,
+  b.id, b.user_id AS owner_id, b.isbn_13, b.title, b.subtitle,
+  b.authors, b.publisher, b.cover_url, b.page_count, b.genres,
+  b.goodreads_rating, b.babelio_rating, b.date_added,
   u.display_name AS owner_name,
   u.photo_url AS owner_photo
 FROM friendships f
@@ -367,8 +369,10 @@ JOIN users u ON u.id = f.receiver_id
 WHERE f.status = 'accepted'
 UNION ALL
 SELECT
-  f.receiver_id AS user_id,
-  b.*,
+  f.receiver_id AS viewer_id,
+  b.id, b.user_id AS owner_id, b.isbn_13, b.title, b.subtitle,
+  b.authors, b.publisher, b.cover_url, b.page_count, b.genres,
+  b.goodreads_rating, b.babelio_rating, b.date_added,
   u.display_name AS owner_name,
   u.photo_url AS owner_photo
 FROM friendships f

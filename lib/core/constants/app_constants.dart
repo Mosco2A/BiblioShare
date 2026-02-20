@@ -7,8 +7,8 @@ class AppConstants {
   static const String appVersion = '1.0.0';
 
   // Supabase — à remplacer par les vraies valeurs
-  static const String supabaseUrl = 'https://YOUR_PROJECT.supabase.co';
-  static const String supabaseAnonKey = 'YOUR_ANON_KEY';
+  static const String supabaseUrl = 'https://osbcejhzxxpdtvbdwaaw.supabase.co';
+  static const String supabaseAnonKey = 'sb_publishable_SziaGaoTzNQe8B8NEYUr8g_umN07Qv3';
 
   // AdMob — Test IDs (remplacer en production)
   static const String admobAndroidAppId =
