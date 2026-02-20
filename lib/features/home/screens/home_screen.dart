@@ -35,25 +35,28 @@ class _HomeScreenState extends State<HomeScreen> {
         onDestinationSelected: (index) {
           setState(() => _currentIndex = index);
         },
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: AppColors.primaryLight.withValues(alpha: 0.2),
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.library_books_outlined),
-            selectedIcon: Icon(Icons.library_books),
+            selectedIcon: Icon(Icons.library_books, color: AppColors.primary),
             label: 'Bibliothèque',
           ),
           NavigationDestination(
             icon: Icon(Icons.photo_camera_outlined),
-            selectedIcon: Icon(Icons.photo_camera),
+            selectedIcon: Icon(Icons.photo_camera, color: AppColors.primary),
             label: 'Scanner',
           ),
           NavigationDestination(
             icon: Icon(Icons.people_outline),
-            selectedIcon: Icon(Icons.people),
+            selectedIcon: Icon(Icons.people, color: AppColors.primary),
             label: 'Social',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
+            selectedIcon: Icon(Icons.person, color: AppColors.primary),
             label: 'Profil',
           ),
         ],

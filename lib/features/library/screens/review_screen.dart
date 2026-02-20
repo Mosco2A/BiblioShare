@@ -514,13 +514,13 @@ class _StarRating extends StatelessWidget {
 
         if (rating >= starValue) {
           icon = Icons.star;
-          color = AppColors.secondary;
+          color = AppColors.starFilled;
         } else if (rating >= halfValue) {
           icon = Icons.star_half;
-          color = AppColors.secondary;
+          color = AppColors.starFilled;
         } else {
           icon = Icons.star_border;
-          color = AppColors.textHint;
+          color = AppColors.starEmpty;
         }
 
         return GestureDetector(

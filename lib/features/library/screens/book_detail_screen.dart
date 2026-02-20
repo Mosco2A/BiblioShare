@@ -429,7 +429,7 @@ class _RatingBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.star, size: 18, color: AppColors.secondary),
+          const Icon(Icons.star, size: 18, color: AppColors.starFilled),
           const SizedBox(width: 4),
           Text(
             rating.toStringAsFixed(1),

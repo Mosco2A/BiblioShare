@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bookGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C4956A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A67B5B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="pageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF5EB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F5E6D3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="shareGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B6F4E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6B5340;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="200" cy="185" r="145" fill="#FFF8F0" opacity="0.6"/>
+  
+  <!-- Open book - left page -->
+  <path d="M200 120 Q200 115 195 112 L120 95 Q105 92 105 108 L105 230 Q105 245 120 248 L195 262 Q200 263 200 258 Z" 
+        fill="url(#pageGrad)" stroke="#D4B896" stroke-width="1.5"/>
+  
+  <!-- Open book - right page -->
+  <path d="M200 120 Q200 115 205 112 L280 95 Q295 92 295 108 L295 230 Q295 245 280 248 L205 262 Q200 263 200 258 Z" 
+        fill="url(#pageGrad)" stroke="#D4B896" stroke-width="1.5"/>
+  
+  <!-- Book spine -->
+  <line x1="200" y1="112" x2="200" y2="263" stroke="#C4956A" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Book cover edges -->
+  <path d="M200 120 Q200 115 195 112 L120 95 Q100 90 100 108 L100 233 Q100 250 120 252 L195 265 Q200 266 200 261" 
+        fill="none" stroke="url(#bookGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M200 120 Q200 115 205 112 L280 95 Q300 90 300 108 L300 233 Q300 250 280 252 L205 265 Q200 266 200 261" 
+        fill="none" stroke="url(#bookGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Text lines on left page -->
+  <line x1="125" y1="135" x2="185" y2="140" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="125" y1="150" x2="180" y2="155" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+  <line x1="125" y1="165" x2="175" y2="170" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  <line x1="125" y1="180" x2="185" y2="185" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+  <line x1="125" y1="195" x2="170" y2="200" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  
+  <!-- Text lines on right page -->
+  <line x1="215" y1="140" x2="275" y2="135" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="220" y1="155" x2="275" y2="150" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+  <line x1="225" y1="170" x2="275" y2="165" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  <line x1="215" y1="185" x2="275" y2="180" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+  <line x1="220" y1="200" x2="270" y2="195" stroke="#D4B896" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  
+  <!-- Share icon - top right -->
+  <!-- Share node circles -->
+  <circle cx="310" cy="110" r="14" fill="url(#shareGrad)" opacity="0.9"/>
+  <circle cx="340" cy="160" r="11" fill="url(#shareGrad)" opacity="0.7"/>
+  <circle cx="310" cy="210" r="11" fill="url(#shareGrad)" opacity="0.7"/>
+  
+  <!-- Share connection lines -->
+  <line x1="322" y1="117" x2="331" y2="152" stroke="#8B6F4E" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="331" y1="168" x2="319" y2="203" stroke="#8B6F4E" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  
+  <!-- Small dots on share nodes -->
+  <circle cx="310" cy="110" r="5" fill="#FFF8F0"/>
+  <circle cx="340" cy="160" r="4" fill="#FFF8F0"/>
+  <circle cx="310" cy="210" r="4" fill="#FFF8F0"/>
+  
+  <!-- Logo text -->
+  <text x="200" y="325" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="bold" fill="#5C4033" letter-spacing="3">
+    BiblioShare
+  </text>
+  <text x="200" y="355" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#A67B5B" letter-spacing="6" text-transform="uppercase">
+    PARTAGEZ VOS LECTURES
+  </text>
+</svg>

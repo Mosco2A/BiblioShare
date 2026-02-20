@@ -4,7 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../core/services/ad_service.dart';
@@ -111,27 +113,32 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 48),
 
-                // Logo / Title
-                Icon(
-                  Icons.menu_book_rounded,
-                  size: 72,
-                  color: AppColors.primary,
+                // Logo SVG
+                SvgPicture.asset(
+                  'assets/images/logo.svg',
+                  width: 120,
+                  height: 120,
                 ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
 
                 Text(
                   'BiblioShare',
-                  style: context.textTheme.headlineLarge?.copyWith(
-                    color: AppColors.primary,
+                  style: GoogleFonts.merriweather(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primaryDark,
+                    letterSpacing: 1,
                   ),
                 ).animate().fadeIn(delay: 300.ms),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
 
                 Text(
-                  'Ta bibliothèque. Tes amis. Tes livres.',
-                  style: context.textTheme.bodyLarge?.copyWith(
+                  'Partagez vos lectures',
+                  style: GoogleFonts.merriweather(
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic,
                     color: AppColors.textSecondary,
                   ),
                   textAlign: TextAlign.center,
