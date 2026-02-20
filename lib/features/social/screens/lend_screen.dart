@@ -238,7 +238,7 @@ class _LendScreenState extends State<LendScreen> {
             bookId: widget.bookId,
             ownerId: userId,
             borrowerId: _selectedFriendId,
-            status: LoanStatus.active,
+            status: LoanStatus.requested,
             dueDate: _dueDate,
             notes: _notesController.text.isNotEmpty
                 ? _notesController.text.trim()

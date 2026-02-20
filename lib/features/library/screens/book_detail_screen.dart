@@ -258,7 +258,7 @@ class BookDetailScreen extends StatelessWidget {
   void _handleAction(BuildContext context, String action, BookModel book) {
     switch (action) {
       case 'edit':
-        // TODO: ecran edition livre
+        _showEditDialog(context, book);
         break;
       case 'lend':
         context.push('/book/${book.id}/lend', extra: {'title': book.title});
@@ -270,6 +270,67 @@ class BookDetailScreen extends StatelessWidget {
         _confirmDelete(context, book);
         break;
     }
+  }
+
+  void _showEditDialog(BuildContext context, BookModel book) {
+    final titleController = TextEditingController(text: book.title);
+    final conditionValues = ['new', 'good', 'fair', 'poor'];
+    String selectedCondition = book.condition;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('Modifier le livre'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(
+                  labelText: 'Titre',
+                  prefixIcon: Icon(Icons.book),
+                ),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                initialValue: selectedCondition,
+                decoration: const InputDecoration(
+                  labelText: 'État du livre',
+                  prefixIcon: Icon(Icons.auto_awesome),
+                ),
+                items: conditionValues.map((c) => DropdownMenuItem(
+                  value: c,
+                  child: Text(_conditionLabel(c)),
+                )).toList(),
+                onChanged: (v) {
+                  if (v != null) setDialogState(() => selectedCondition = v);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Annuler'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(ctx);
+                try {
+                  await context.read<LibraryProvider>().updateBookLocal(
+                    book.id,
+                    title: titleController.text.trim(),
+                    condition: selectedCondition,
+                  );
+                } catch (_) {}
+              },
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _confirmDelete(BuildContext context, BookModel book) {

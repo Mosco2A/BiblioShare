@@ -17,6 +17,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  bool _booksLoaded = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_booksLoaded) {
+      _booksLoaded = true;
+      final auth = context.read<AuthProvider>();
+      if (auth.userId != null) {
+        context.read<LibraryProvider>().loadBooks(auth.userId!);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -264,15 +277,18 @@ class _ProfileTab extends StatelessWidget {
                     ),
                   ],
                   const SizedBox(height: 24),
-                  // Stats placeholder
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _StatCard(label: 'Livres', value: '0'),
-                      _StatCard(label: 'Lus', value: '0'),
-                      _StatCard(label: 'Amis', value: '0'),
-                    ],
-                  ),
+                  // Stats from library
+                  Builder(builder: (context) {
+                    final library = context.watch<LibraryProvider>();
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _StatCard(label: 'Livres', value: '${library.bookCount}'),
+                        _StatCard(label: 'Genres', value: '${_countGenres(library)}'),
+                        _StatCard(label: 'Auteurs', value: '${_countAuthors(library)}'),
+                      ],
+                    );
+                  }),
                   const SizedBox(height: 32),
                   if (auth.isAnonymous)
                     Container(
@@ -372,6 +388,24 @@ class _EmptyState extends StatelessWidget {
       ),
     );
   }
+}
+
+int _countGenres(LibraryProvider library) {
+  final genres = <String>{};
+  for (final book in library.books) {
+    genres.addAll(book.genres);
+  }
+  return genres.length;
+}
+
+int _countAuthors(LibraryProvider library) {
+  final authors = <String>{};
+  for (final book in library.books) {
+    for (final a in book.authors) {
+      authors.add(a.name);
+    }
+  }
+  return authors.length;
 }
 
 /// Mini-carte de stats

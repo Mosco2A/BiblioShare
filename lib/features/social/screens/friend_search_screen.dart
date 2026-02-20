@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -65,7 +66,15 @@ class _FriendSearchScreenState extends State<FriendSearchScreen> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      // TODO: share_plus — partager lien d'invitation
+                      Clipboard.setData(const ClipboardData(
+                        text: 'Rejoins-moi sur BiblioShare ! Partage ta bibliothèque avec tes amis.',
+                      ));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Lien d\'invitation copié !'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.share),
                     label: const Text('Inviter par lien'),
@@ -75,7 +84,15 @@ class _FriendSearchScreenState extends State<FriendSearchScreen> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      // TODO: SMS invitation via url_launcher
+                      Clipboard.setData(const ClipboardData(
+                        text: 'Rejoins-moi sur BiblioShare ! Partage ta bibliothèque avec tes amis.',
+                      ));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Message copié ! Colle-le dans ton app SMS.'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.sms_outlined),
                     label: const Text('Inviter par SMS'),

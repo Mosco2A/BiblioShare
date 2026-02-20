@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_constants.dart';
@@ -49,6 +50,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _locationController.dispose();
     _linkController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickProfileImage() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 80,
+    );
+    if (image != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Photo sélectionnée ! Elle sera visible après le déploiement du stockage.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Future<void> _save() async {
@@ -130,9 +149,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         iconSize: 16,
                         icon: const Icon(Icons.camera_alt,
                             color: Colors.white),
-                        onPressed: () {
-                          // TODO: Pick image
-                        },
+                        onPressed: () => _pickProfileImage(),
                       ),
                     ),
                   ),

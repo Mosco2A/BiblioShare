@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/services/supabase_service.dart';
 import '../../../shared/models/user_model.dart';
@@ -14,7 +15,7 @@ enum AuthStatus {
   onboarding,
 }
 
-/// Provider d'authentification — écoute Firebase Auth et sync Supabase
+/// Provider d'authentification — ecoute Firebase Auth et sync Supabase
 class AuthProvider extends ChangeNotifier {
   AuthStatus _status = AuthStatus.initial;
   User? _firebaseUser;
@@ -45,11 +46,14 @@ class AuthProvider extends ChangeNotifier {
       _status = AuthStatus.unauthenticated;
       _userProfile = null;
     } else {
-      // Sync avec Supabase
+      // Tenter de sync avec Supabase
       await _syncWithSupabase(user);
 
-      // Vérifier si onboarding terminé
-      if (_userProfile != null && _userProfile!.onboardingCompleted) {
+      // Verifier onboarding : profil Supabase OU fallback local
+      final onboardingDone = _userProfile?.onboardingCompleted ??
+          await _getLocalOnboardingStatus(user.uid);
+
+      if (onboardingDone) {
         _status = AuthStatus.authenticated;
       } else {
         _status = AuthStatus.onboarding;
@@ -61,24 +65,77 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _syncWithSupabase(User user) async {
     try {
-      // Tenter de sync via Edge Function
-      await SupabaseService.syncUser(
-        firebaseUid: user.uid,
-        displayName: user.displayName,
-        email: user.email,
-        phone: user.phoneNumber,
-        photoUrl: user.photoURL,
-        authProviders: AuthService.linkedProviders,
-      );
+      // D'abord essayer de charger le profil existant
+      final profileData = await SupabaseService.getUserProfile(user.uid);
 
-      // Charger le profil
+      if (profileData != null) {
+        _userProfile = UserModel.fromJson(profileData);
+      } else {
+        // Pas de profil → creer directement dans Supabase
+        await _createSupabaseProfile(user);
+      }
+    } catch (e) {
+      debugPrint('Supabase sync error: $e');
+      // Continuer sans profil Supabase — fallback local
+    }
+  }
+
+  /// Cree le profil utilisateur directement dans la table users
+  Future<void> _createSupabaseProfile(User user) async {
+    try {
+      final username = _generateUsername(user);
+      final data = {
+        'id': user.uid,
+        'display_name': user.displayName ?? 'Utilisateur',
+        'username': username,
+        'email': user.email,
+        'phone': user.phoneNumber,
+        'photo_url': user.photoURL,
+        'auth_providers': AuthService.linkedProviders,
+        'onboarding_completed': false,
+        'locale': 'fr',
+        'timezone': 'Europe/Paris',
+      };
+
+      await SupabaseService.client.from('users').upsert(data);
+
+      // Recharger le profil
       final profileData = await SupabaseService.getUserProfile(user.uid);
       if (profileData != null) {
         _userProfile = UserModel.fromJson(profileData);
       }
     } catch (e) {
-      debugPrint('Supabase sync error: $e');
-      // Continue sans profil Supabase — sera créé plus tard
+      debugPrint('Create Supabase profile error: $e');
+    }
+  }
+
+  String _generateUsername(User user) {
+    if (user.displayName != null && user.displayName!.isNotEmpty) {
+      return user.displayName!
+          .toLowerCase()
+          .replaceAll(RegExp(r'[^a-z0-9]'), '')
+          .substring(0, (user.displayName!.length).clamp(0, 15));
+    }
+    return 'user_${user.uid.substring(0, 8)}';
+  }
+
+  // ── Onboarding local fallback ──
+
+  Future<bool> _getLocalOnboardingStatus(String uid) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool('onboarding_done_$uid') ?? false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> _setLocalOnboardingStatus(String uid, bool done) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('onboarding_done_$uid', done);
+    } catch (e) {
+      debugPrint('SharedPreferences error: $e');
     }
   }
 
@@ -91,8 +148,19 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> completeOnboarding() async {
     if (userId == null) return;
-    await SupabaseService.completeOnboarding(userId!);
-    _userProfile = _userProfile?.copyWith(onboardingCompleted: true);
+
+    // Sauvegarder en local d'abord (toujours fiable)
+    await _setLocalOnboardingStatus(userId!, true);
+
+    // Tenter de mettre a jour Supabase
+    try {
+      await SupabaseService.completeOnboarding(userId!);
+      _userProfile = _userProfile?.copyWith(onboardingCompleted: true);
+    } catch (e) {
+      debugPrint('completeOnboarding Supabase error: $e');
+    }
+
+    // Passer a authenticated dans tous les cas
     _status = AuthStatus.authenticated;
     notifyListeners();
   }
@@ -107,10 +175,14 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> refreshProfile() async {
     if (userId == null) return;
-    final profileData = await SupabaseService.getUserProfile(userId!);
-    if (profileData != null) {
-      _userProfile = UserModel.fromJson(profileData);
-      notifyListeners();
+    try {
+      final profileData = await SupabaseService.getUserProfile(userId!);
+      if (profileData != null) {
+        _userProfile = UserModel.fromJson(profileData);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('refreshProfile error: $e');
     }
   }
 

@@ -3,30 +3,51 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../providers/scan_provider.dart';
 
 /// Écran principal de scan — choix caméra/galerie, puis analyse
-class ScanScreen extends StatelessWidget {
+class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ScanProvider(),
-      child: const _ScanScreenContent(),
-    );
-  }
+  State<ScanScreen> createState() => _ScanScreenState();
 }
 
-class _ScanScreenContent extends StatelessWidget {
-  const _ScanScreenContent();
+class _ScanScreenState extends State<ScanScreen> {
+  bool _hasNavigatedToResults = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final scan = context.read<ScanProvider>();
+      // Reset if entering from a previous completed/errored scan
+      if (scan.state == ScanState.results || scan.state == ScanState.error) {
+        scan.reset();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final scanProvider = context.watch<ScanProvider>();
+
+    // Auto-navigate to results when ready (once only)
+    if (scanProvider.state == ScanState.results && !_hasNavigatedToResults) {
+      _hasNavigatedToResults = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) context.push('/scan/results');
+      });
+    }
+
+    // Reset navigation flag when scan resets to idle
+    if (scanProvider.state == ScanState.idle) {
+      _hasNavigatedToResults = false;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +63,7 @@ class _ScanScreenContent extends StatelessWidget {
           ),
         ScanState.scanning => const _ScanningView(),
         ScanState.enriching => const _EnrichingView(),
-        ScanState.results => const _ResultsReadyView(),
+        ScanState.results => const Center(child: CircularProgressIndicator()),
         ScanState.error => _ErrorView(
             message: scanProvider.errorMessage ?? 'Erreur inconnue',
             onRetry: () => scanProvider.reset(),
@@ -61,11 +82,12 @@ class _IdleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(height: 24),
             Container(
               width: 120,
               height: 120,
@@ -151,25 +173,31 @@ class _IdleView extends StatelessWidget {
   }
 
   Future<void> _pickFromCamera(BuildContext context) async {
-    // TODO: Intégrer image_picker pour caméra
-    // Pour l'instant, on simule avec un placeholder
-    _showImagePickerPlaceholder(context, 'caméra');
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.camera,
+      maxWidth: 2048,
+      maxHeight: 2048,
+      imageQuality: 85,
+    );
+    if (image != null) {
+      final bytes = await image.readAsBytes();
+      onPickImage(bytes);
+    }
   }
 
   Future<void> _pickFromGallery(BuildContext context) async {
-    // TODO: Intégrer image_picker pour galerie
-    _showImagePickerPlaceholder(context, 'galerie');
-  }
-
-  void _showImagePickerPlaceholder(BuildContext context, String source) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Sélection depuis $source — nécessite le package image_picker configuré',
-        ),
-        behavior: SnackBarBehavior.floating,
-      ),
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 2048,
+      maxHeight: 2048,
+      imageQuality: 85,
     );
+    if (image != null) {
+      final bytes = await image.readAsBytes();
+      onPickImage(bytes);
+    }
   }
 }
 
@@ -257,21 +285,6 @@ class _EnrichingView extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-/// Vue quand les résultats sont prêts → redirige vers ScanResultsScreen
-class _ResultsReadyView extends StatelessWidget {
-  const _ResultsReadyView();
-
-  @override
-  Widget build(BuildContext context) {
-    // Rediriger automatiquement vers l'écran de résultats
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.push('/scan/results');
-    });
-
-    return const Center(child: CircularProgressIndicator());
   }
 }
 

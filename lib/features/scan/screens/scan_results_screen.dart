@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/models/book_model.dart';
 import '../../../shared/models/scan_result_model.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../library/providers/library_provider.dart';
 import '../providers/scan_provider.dart';
 
 /// Écran de validation des résultats du scan
@@ -73,6 +75,7 @@ class ScanResultsScreen extends StatelessWidget {
 
   Future<void> _saveBooks(BuildContext context) async {
     final scanProvider = context.read<ScanProvider>();
+    final libraryProvider = context.read<LibraryProvider>();
     final userId = context.read<AuthProvider>().userId;
     if (userId == null) return;
 
@@ -84,7 +87,33 @@ class ScanResultsScreen extends StatelessWidget {
     );
 
     try {
-      final count = await scanProvider.saveConfirmedBooks(userId);
+      // Convert confirmed DetectedBooks to BookModels
+      final confirmed = scanProvider.detectedBooks.where((b) => b.confirmed).toList();
+      final books = confirmed.map((d) {
+        return BookModel(
+          id: DateTime.now().microsecondsSinceEpoch.toString(),
+          userId: userId,
+          isbn13: d.isbn13,
+          title: d.detectedTitle,
+          authors: d.detectedAuthor != null
+              ? [BookAuthor(name: d.detectedAuthor!)]
+              : [],
+          publisher: d.detectedPublisher,
+          coverUrl: d.coverUrl,
+          pageCount: d.pageCount,
+          description: d.description,
+          genres: d.genres ?? [],
+          scanConfidence: d.confidence,
+          dateAdded: DateTime.now(),
+        );
+      }).toList();
+
+      // Use LibraryProvider which has Supabase + local fallback
+      final count = await libraryProvider.addBooks(books);
+
+      // Reset scan state before navigating away
+      scanProvider.reset();
+
       if (!context.mounted) return;
       Navigator.of(context).pop(); // Fermer le dialog
 

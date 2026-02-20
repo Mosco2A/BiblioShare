@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../features/auth/providers/auth_provider.dart';
+import '../theme/app_colors.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/auth/screens/otp_verification_screen.dart';
@@ -128,9 +130,7 @@ class AppRouter {
         ),
         GoRoute(
           path: AppRoutes.settings,
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text('Paramètres — bientôt disponible')),
-          ),
+          builder: (context, state) => const _SettingsScreen(),
         ),
         GoRoute(
           path: AppRoutes.scan,
@@ -194,6 +194,116 @@ class AppRouter {
           child: Text('Page introuvable : ${state.error}'),
         ),
       ),
+    );
+  }
+}
+
+/// Écran Paramètres intégré
+class _SettingsScreen extends StatelessWidget {
+  const _SettingsScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Paramètres')),
+      body: ListView(
+        children: [
+          const SizedBox(height: 8),
+          _SettingsSection(title: 'Compte', children: [
+            ListTile(
+              leading: const Icon(Icons.person_outline),
+              title: const Text('Modifier le profil'),
+              trailing: const Icon(Icons.chevron_right, size: 18),
+              onTap: () => context.push('/edit-profile'),
+            ),
+          ]),
+          _SettingsSection(title: 'Préférences', children: [
+            ListTile(
+              leading: const Icon(Icons.language),
+              title: const Text('Langue'),
+              subtitle: const Text('Français'),
+              trailing: const Icon(Icons.chevron_right, size: 18),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('D\'autres langues seront disponibles prochainement.'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+            SwitchListTile(
+              secondary: const Icon(Icons.dark_mode_outlined),
+              title: const Text('Mode sombre'),
+              subtitle: const Text('Suit les paramètres du système'),
+              value: false,
+              onChanged: (_) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Le thème suit automatiquement votre système.'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+          ]),
+          _SettingsSection(title: 'À propos', children: [
+            const ListTile(
+              leading: Icon(Icons.info_outline),
+              title: Text('Version'),
+              subtitle: Text('1.0.0'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.privacy_tip_outlined),
+              title: const Text('Politique de confidentialité'),
+              trailing: const Icon(Icons.chevron_right, size: 18),
+              onTap: () {},
+            ),
+          ]),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: OutlinedButton.icon(
+              onPressed: () => context.read<AuthProvider>().signOut(),
+              icon: const Icon(Icons.logout),
+              label: const Text('Se déconnecter'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.error,
+                side: const BorderSide(color: AppColors.error),
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsSection extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+
+  const _SettingsSection({required this.title, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ),
+        ...children,
+        const Divider(),
+      ],
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/extensions.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../library/providers/library_provider.dart';
 import '../providers/profile_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -91,20 +92,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   const SizedBox(height: 24),
 
-                  // Stats placeholder
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _StatColumn(label: 'Livres', value: '0'),
-                          _StatColumn(label: 'Lus', value: '0'),
-                          _StatColumn(label: 'Note moy.', value: '-'),
-                        ],
+                  // Stats from library
+                  Builder(builder: (context) {
+                    final library = context.watch<LibraryProvider>();
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            _StatColumn(label: 'Livres', value: '${library.bookCount}'),
+                            _StatColumn(label: 'Genres', value: '${_uniqueGenresCount(library)}'),
+                            _StatColumn(label: 'Auteurs', value: '${_uniqueAuthorsCount(library)}'),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
 
                   const SizedBox(height: 24),
 
@@ -137,7 +141,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const SizedBox(height: 8),
                             ElevatedButton(
                               onPressed: () {
-                                // TODO: Link credential flow
+                                // Sign out and redirect to login to create a real account
+                                context.read<AuthProvider>().signOut();
                               },
                               child: const Text('Créer mon compte'),
                             ),
@@ -150,6 +155,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
     );
   }
+}
+
+int _uniqueGenresCount(LibraryProvider library) {
+  final genres = <String>{};
+  for (final book in library.books) {
+    genres.addAll(book.genres);
+  }
+  return genres.length;
+}
+
+int _uniqueAuthorsCount(LibraryProvider library) {
+  final authors = <String>{};
+  for (final book in library.books) {
+    for (final author in book.authors) {
+      authors.add(author.name);
+    }
+  }
+  return authors.length;
 }
 
 class _StatColumn extends StatelessWidget {

@@ -191,8 +191,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 24),
             OutlinedButton.icon(
               onPressed: () {
-                // TODO: Module 3 — Scanner
-                context.showSnackBar('Le scanner sera disponible bientôt !');
+                _finishOnboarding();
+                // Le scan sera accessible depuis le home
               },
               icon: const Icon(Icons.camera_alt),
               label: const Text('Scanner maintenant'),
@@ -202,19 +202,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (page.icon == Icons.people_outline) ...[
             const SizedBox(height: 24),
             OutlinedButton.icon(
-              onPressed: () {
-                // TODO: Module 6 — Invitations
-                context.showSnackBar('Les invitations seront disponibles bientôt !');
-              },
+              onPressed: () => _finishOnboarding(),
               icon: const Icon(Icons.sms_outlined),
               label: const Text('Inviter par SMS'),
             ),
             const SizedBox(height: 8),
             OutlinedButton.icon(
-              onPressed: () {
-                // TODO: Module 6 — Invitations
-                context.showSnackBar('Les invitations seront disponibles bientôt !');
-              },
+              onPressed: () => _finishOnboarding(),
               icon: const Icon(Icons.email_outlined),
               label: const Text('Inviter par email'),
             ),

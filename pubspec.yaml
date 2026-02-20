@@ -43,6 +43,7 @@ dependencies:
   # Country code picker for phone auth
   intl_phone_field: ^3.2.0
   flutter_svg: ^2.2.3
+  image_picker: ^1.2.1
 
 dev_dependencies:
   flutter_test:
