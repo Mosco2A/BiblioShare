@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../library/providers/library_provider.dart';
 
 /// Écran principal avec navigation par onglets
 class HomeScreen extends StatefulWidget {
@@ -60,12 +62,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-/// Onglet Bibliothèque — état vide avec CTA
+/// Onglet Bibliothèque — liste des livres ou état vide
 class _LibraryTab extends StatelessWidget {
   const _LibraryTab();
 
   @override
   Widget build(BuildContext context) {
+    final library = context.watch<LibraryProvider>();
+    final books = library.books;
+
     return SafeArea(
       child: CustomScrollView(
         slivers: [
@@ -86,19 +91,64 @@ class _LibraryTab extends StatelessWidget {
               ),
             ],
           ),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: _EmptyState(
-              icon: Icons.menu_book_rounded,
-              title: 'Aucun livre pour l\'instant',
-              subtitle:
-                  'Scanne une étagère ou ajoute un livre manuellement pour commencer.',
-              buttonLabel: 'Scanner une étagère',
-              onPressed: () {
-                // TODO: naviguer vers le scanner
-              },
-            ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
-          ),
+          if (books.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: _EmptyState(
+                icon: Icons.menu_book_rounded,
+                title: 'Aucun livre pour l\'instant',
+                subtitle:
+                    'Scanne une étagère ou ajoute un livre manuellement pour commencer.',
+                buttonLabel: 'Scanner une étagère',
+                onPressed: () => context.push('/scan'),
+              ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
+            )
+          else
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (ctx, i) {
+                  final book = books[i];
+                  return ListTile(
+                    onTap: () => context.push('/book/${book.id}'),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: book.coverUrl != null
+                          ? Image.network(
+                              book.coverUrl!,
+                              width: 40,
+                              height: 56,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, e, st) => Container(
+                                width: 40,
+                                height: 56,
+                                color: AppColors.primary.withValues(alpha: 0.1),
+                                child: const Icon(Icons.book, size: 20),
+                              ),
+                            )
+                          : Container(
+                              width: 40,
+                              height: 56,
+                              color: AppColors.primary.withValues(alpha: 0.1),
+                              child: const Icon(Icons.book, size: 20),
+                            ),
+                    ),
+                    title: Text(
+                      book.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      book.authorsDisplay,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: AppColors.textSecondary),
+                    ),
+                    trailing: const Icon(Icons.chevron_right, size: 18),
+                  );
+                },
+                childCount: books.length,
+              ),
+            ),
         ],
       ),
     );
@@ -119,9 +169,7 @@ class _ScanTab extends StatelessWidget {
           subtitle:
               'Prends en photo ton étagère et BiblioShare identifie chaque livre automatiquement.',
           buttonLabel: 'Ouvrir la caméra',
-          onPressed: () {
-            // TODO: Module 3 — scanner
-          },
+          onPressed: () => context.push('/scan'),
         ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.95, 0.95)),
       ),
     );
@@ -148,9 +196,7 @@ class _SocialTab extends StatelessWidget {
               subtitle:
                   'Partage ta bibliothèque, emprunte des livres et recommande tes coups de cœur.',
               buttonLabel: 'Inviter un ami',
-              onPressed: () {
-                // TODO: Module 6 — invitations
-              },
+              onPressed: () => context.push('/friends'),
             ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
           ),
         ],
@@ -174,9 +220,7 @@ class _ProfileTab extends StatelessWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings_outlined),
-                onPressed: () {
-                  // TODO: naviguer vers paramètres
-                },
+                onPressed: () => context.push('/settings'),
               ),
             ],
           ),

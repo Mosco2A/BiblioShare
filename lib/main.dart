@@ -9,7 +9,10 @@ import 'core/services/supabase_service.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/providers/auth_provider.dart';
 import 'features/library/providers/library_provider.dart';
+import 'features/library/providers/review_provider.dart';
 import 'features/profile/providers/profile_provider.dart';
+import 'features/social/providers/social_provider.dart';
+import 'features/social/providers/loan_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +64,9 @@ class _BiblioShareAppState extends State<BiblioShareApp> {
         ChangeNotifierProvider.value(value: _authProvider),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => LibraryProvider()),
+        ChangeNotifierProvider(create: (_) => ReviewProvider()),
+        ChangeNotifierProvider(create: (_) => SocialProvider()),
+        ChangeNotifierProvider(create: (_) => LoanProvider()),
       ],
       child: MaterialApp.router(
         title: 'BiblioShare',

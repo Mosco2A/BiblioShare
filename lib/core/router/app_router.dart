@@ -9,8 +9,15 @@ import '../../features/auth/screens/splash_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/profile/screens/edit_profile_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
+import '../../features/library/screens/book_detail_screen.dart';
+import '../../features/library/screens/review_screen.dart';
 import '../../features/scan/screens/scan_screen.dart';
 import '../../features/scan/screens/scan_results_screen.dart';
+import '../../features/social/screens/friends_screen.dart';
+import '../../features/social/screens/friend_search_screen.dart';
+import '../../features/social/screens/loans_screen.dart';
+import '../../features/social/screens/lend_screen.dart';
+import '../../features/social/screens/recommend_screen.dart';
 
 /// Noms des routes
 class AppRoutes {
@@ -26,6 +33,14 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String scan = '/scan';
   static const String scanResults = '/scan/results';
+  static const String bookDetail = '/book/:bookId';
+  static const String bookReview = '/book/:bookId/review';
+  static const String bookRecommend = '/book/:bookId/recommend';
+  static const String bookLend = '/book/:bookId/lend';
+  static const String friends = '/friends';
+  static const String friendSearch = '/friends/search';
+  static const String friendProfile = '/friends/:friendId';
+  static const String loans = '/loans';
 }
 
 /// Configuration du routeur GoRouter avec auth redirect
@@ -124,6 +139,54 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.scanResults,
           builder: (context, state) => const ScanResultsScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.bookDetail,
+          builder: (context, state) {
+            final bookId = state.pathParameters['bookId']!;
+            return BookDetailScreen(bookId: bookId);
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.bookReview,
+          builder: (context, state) {
+            final bookId = state.pathParameters['bookId']!;
+            return ReviewScreen(bookId: bookId);
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.bookRecommend,
+          builder: (context, state) {
+            final bookId = state.pathParameters['bookId']!;
+            final extra = state.extra as Map<String, dynamic>?;
+            return RecommendScreen(
+              bookId: bookId,
+              bookTitle: extra?['title'] as String?,
+            );
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.bookLend,
+          builder: (context, state) {
+            final bookId = state.pathParameters['bookId']!;
+            final extra = state.extra as Map<String, dynamic>?;
+            return LendScreen(
+              bookId: bookId,
+              bookTitle: extra?['title'] as String?,
+            );
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.friends,
+          builder: (context, state) => const FriendsScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.friendSearch,
+          builder: (context, state) => const FriendSearchScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.loans,
+          builder: (context, state) => const LoansScreen(),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(
