@@ -25,15 +25,27 @@ Future<void> main() async {
   ]);
 
   // Initialiser Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Firebase init error: $e');
+  }
 
   // Initialiser Supabase
-  await SupabaseService.initialize();
+  try {
+    await SupabaseService.initialize();
+  } catch (e) {
+    debugPrint('Supabase init error: $e');
+  }
 
   // Initialiser AdMob
-  await AdService.initialize();
+  try {
+    await AdService.initialize();
+  } catch (e) {
+    debugPrint('AdMob init error: $e');
+  }
 
   runApp(const BiblioShareApp());
 }
