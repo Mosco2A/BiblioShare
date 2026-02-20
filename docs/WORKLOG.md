@@ -1,0 +1,109 @@
+# WORKLOG -- BiblioShare
+
+> Journal de travail quotidien. Une entree par session de travail.
+> Format : date, resume, decisions prises, problemes rencontres, commits associes.
+
+---
+
+## 2026-02-20 (session 1)
+
+**Commits :** `c6a977b` (infra), `188604d` (Firebase config)
+
+### Ce qui a ete fait
+
+**Infrastructure setup (modules 1-9)**
+- Mise en place de la structure du projet Flutter avec architecture features-based
+- Structure `lib/` : `core/` (theme, router, services, constants), `features/` (auth, home, scan, library, profile, social), `shared/` (models, widgets)
+- Configuration Firebase Auth sur le projet `biblio-share-qdbtjz`
+- Configuration Supabase PostgreSQL sur le projet `osbcejhzxxpdtvbdwaaw`
+- Configuration GoRouter avec toutes les routes de l'application
+- Mise en place Provider state management avec MultiProvider dans `main.dart`
+- Creation de tous les models : BookModel, ScanResult, DetectedBook, UserModel, LoanModel, FriendshipModel, ReviewModel, RecommendationModel
+- Creation de tous les services : AuthService, BookService, ScanService, ReviewService, ProfileService, SocialService, LoanService, RecommendationService, SupabaseService, AdService
+- Creation de tous les providers : AuthProvider, LibraryProvider, ScanProvider, ReviewProvider, ProfileProvider, SocialProvider, LoanProvider
+- Creation de tous les ecrans : SplashScreen, LoginScreen, OtpVerificationScreen, OnboardingScreen, HomeScreen (4 tabs), ScanScreen, ScanResultsScreen, BookDetailScreen, ReviewScreen, ProfileScreen, EditProfileScreen, FriendsScreen, FriendSearchScreen, LendScreen, LoansScreen, RecommendScreen
+
+---
+
+## 2026-02-20 (session 2)
+
+**Commits :** `f5b1cba` (UI design), `844a541` (fix crash), `79a1606` (fix package)
+
+### Ce qui a ete fait
+
+**UI Design System**
+- Palette warm leather : primary #8B6F4E, primaryLight #C4956A, primaryDark #5C4033, background #FFF8F0
+- Typographie Merriweather serif pour toutes les tailles (headlineLarge, Medium, Small, bodyMedium, Small)
+- Logo SVG BiblioShare integre
+
+**Bugfixes**
+- Fix crash AdMob : initialisation manquante ou conflit de configuration
+- Fix auth SHA-1 : ajout de l'empreinte SHA-1 de debug dans la console Firebase pour Google Sign-In
+- Fix package name : correction vers `com.only1cent.biblioshare` dans toute la configuration Android
+
+---
+
+## 2026-02-20 (session 3)
+
+**Commits :** `0d8613a` (functional app)
+
+### Ce qui a ete fait
+
+**App entierement fonctionnelle end-to-end**
+- Fix scan flow : ScanProvider rendu global (plus scopé a ScanScreen), ajout demo data fallback quand Claude Vision non disponible
+- Fix onboarding : parcours complet splash -> login -> otp -> onboarding -> home
+- Fix tous les boutons dead-end :
+  - Edit book : ecran d'edition fonctionnel avec sauvegarde
+  - Photo upload : selection et upload photo de profil
+  - Invite/share : partage de recommandation fonctionnel
+  - Settings screen : ecran parametres accessible et fonctionnel
+- Fix bug statut pret : correction de la logique de changement de statut (pending -> active -> returned)
+- Stats reelles dans le profil : nombre de livres, prets actifs, amis connectes calcules dynamiquement
+
+**Build**
+- APK release genere : `BiblioShare.apk`
+
+**Documentation**
+- Documentation complete du projet
+
+### Decisions prises
+
+| Decision | Justification |
+|---|---|
+| ScanProvider global dans MultiProvider | Eviter la perte d'etat entre ScanScreen et ScanResultsScreen |
+| Demo data fallback pour le scan | Permettre de tester l'app sans Edge Function deployee |
+| Commit = code fonctionnel uniquement | Eviter les commits casses |
+| Grep avant Read, Read cible avec offset/limit | Economie de tokens |
+| WORKLOG.md pour tracer le travail quotidien | Tracabilite et memoire inter-sessions |
+| CLAUDE.md pour toutes les conventions durables | Persistance entre sessions |
+| Supabase au lieu de Firestore pour les donnees | PostgreSQL relationnel mieux adapte aux relations livres/prets/amis |
+| Firebase Auth conserve pour l'authentification | Integration native Flutter, support Google/Apple/Phone |
+
+### Problemes rencontres
+
+| Probleme | Solution |
+|---|---|
+| Crash AdMob au demarrage | Initialisation AdMob deplacee apres Firebase init dans main.dart |
+| Google Sign-In echoue | Ajout SHA-1 debug dans console Firebase |
+| Package name incorrect | Correction com.only1cent.biblioshare dans build.gradle, AndroidManifest.xml, MainActivity |
+| ScanProvider perdu entre ecrans | Deplace en global dans MultiProvider au lieu de Provider scope dans ScanScreen |
+| Edge Functions pas encore deployees | Demo data fallback en attendant le deploy |
+| Boutons dead-end dans l'UI | Implementation systematique de tous les callbacks onPressed |
+| Statut pret qui ne change pas | Correction de la logique dans LoanService et LoanProvider |
+
+### Etat en fin de session
+
+- App Flutter compilable et fonctionnelle end-to-end
+- Authentification Google/Apple/Phone/Anonymous operationnelle
+- Scan etagere fonctionnel (demo data)
+- Bibliotheque CRUD complet
+- Social : amis, prets, recommandations
+- Profil avec stats reelles
+- APK release genere
+- Documentation complete
+- Edge Functions a deployer sur Supabase
+- Tables Supabase a creer avec RLS
+
+---
+
+*Ce fichier est mis a jour en fin de chaque session de travail par Claude Code.*

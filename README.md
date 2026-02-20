@@ -84,9 +84,13 @@ supabase secrets set GOOGLE_BOOKS_API_KEY=...
 ## Documentation
 
 Voir le dossier [`docs/`](docs/) pour la documentation complete :
-- [`docs/architecture.md`](docs/architecture.md) — Vue d'ensemble de l'architecture
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — Architecture technique detaillee (12 sections)
+- [`docs/ARCHITECTURE.docx`](docs/ARCHITECTURE.docx) — Version Word
+- [`docs/architecture_mindmap.mermaid`](docs/architecture_mindmap.mermaid) — Mindmap Mermaid
+- [`docs/UPDATE_CHECKLIST.md`](docs/UPDATE_CHECKLIST.md) — Checklist de mise a jour
+- [`docs/WORKLOG.md`](docs/WORKLOG.md) — Journal de travail
 - [`docs/modules/`](docs/modules/) — Documentation par module
-- [`docs/supabase/schema.md`](docs/supabase/schema.md) — Schema de base de donnees
+- [`docs/supabase/`](docs/supabase/) — Schema de base de donnees
 
 ## Licence
 
