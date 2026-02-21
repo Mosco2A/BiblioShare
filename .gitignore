@@ -46,3 +46,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Supabase temp
+supabase/.temp/
+
+# Build artifacts
+*.apk
+*.aab
