@@ -5,6 +5,30 @@
 
 ---
 
+## 2026-02-21 (session 4)
+
+**Commits :** feat(scan) scanner reel OCR ML Kit + Google Books API — version 1.1.0
+
+### Ce qui a ete fait
+
+**Remplacement du scanner fake par un vrai scanner**
+- Diagnostic : les Edge Functions Supabase (scan-shelf, enrich-book) n'etaient pas deployees → chaque scan retournait toujours les memes 6 livres demo (L'Etranger, Le Petit Prince, etc.) quelle que soit la photo
+- Solution : remplacement complet par une architecture locale :
+  - Google ML Kit Text Recognition pour l'OCR sur la photo (local, gratuit)
+  - Google Books API pour enrichir chaque livre detecte (gratuit, sans cle API)
+- Ajout des dependances : `google_mlkit_text_recognition`, `http`
+- Ajout ProGuard rules pour R8 compatibility ML Kit
+- Version bump 1.0.1+2 → 1.1.0+3
+- APK `BiblioShare-1.1.0.apk` livre a la racine (87 MB, ML Kit ajoute du poids)
+
+### Decisions techniques
+- OCR local prefere aux Edge Functions : pas de dependance serveur, pas de cle API, fonctionne offline pour la detection
+- Google Books API sans cle : suffisant pour le volume d'utilisation prevu
+- Limite a 15 recherches par scan pour eviter les rate limits
+- Deduplication par ISBN pour eviter les doublons
+
+---
+
 ## 2026-02-21 (session 3)
 
 **Commits :** fix ANR consent GDPR + version bump 1.0.1
