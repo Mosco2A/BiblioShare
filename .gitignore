@@ -50,6 +50,6 @@ app.*.map.json
 # Supabase temp
 supabase/.temp/
 
-# Build artifacts
-*.apk
+# Build artifacts (sauf APK de release à la racine)
 *.aab
+/build/
