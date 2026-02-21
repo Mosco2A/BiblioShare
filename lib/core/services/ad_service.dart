@@ -19,7 +19,8 @@ class AdService {
     if (kIsWeb) return;
     await MobileAds.instance.initialize();
     _updateRequestConfiguration();
-    requestConsent();
+    // Différer le consent GDPR pour ne pas bloquer le démarrage
+    Future.delayed(const Duration(seconds: 3), requestConsent);
   }
 
   /// Met à jour la config de requête
