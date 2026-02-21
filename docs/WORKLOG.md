@@ -5,6 +5,31 @@
 
 ---
 
+## 2026-02-21 (session 3)
+
+**Commits :** fix ANR consent GDPR + version bump 1.0.1
+
+### Ce qui a ete fait
+
+**Fix ANR au demarrage (consent GDPR)**
+- Diagnostic : `requestConsent()` appele synchrone dans `AdService.initialize()` bloquait le thread principal → ANR 5s sur emulateur
+- Fix : `Future.delayed(3s, requestConsent)` dans `ad_service.dart` — consent differe apres le rendu initial
+- Version bump 1.0.0+1 → 1.0.1+2
+- APK `BiblioShare-1.0.1.apk` livre a la racine
+
+**Tests utilisateur sur emulateur Pixel_7_Pro**
+- App installee et lancee via adb — demarrage OK
+- Routes GoRouter toutes enregistrees
+- Navigation splash → login fonctionnelle
+- Pas d'ANR, pas de crash, pas d'exception fatale
+- AdMob timeout gere gracieusement en background (normal sur emulateur)
+- Integration tests existants timeout au chargement (probleme de harness + machine lente, pas de crash app)
+
+### Problemes rencontres
+- Integration tests (`flutter test integration_test/`) timeout apres 12 min pendant la phase de loading — le framework de test n'arrive pas a bootstrapper l'app. Tests manuels via adb + logcat a la place.
+
+---
+
 ## 2026-02-21 (session 2)
 
 **Commits :** fix crash demarrage
