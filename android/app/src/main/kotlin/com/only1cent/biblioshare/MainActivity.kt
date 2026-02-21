@@ -1,4 +1,4 @@
-package com.biblioshare.biblioshare
+package com.only1cent.biblioshare
 
 import io.flutter.embedding.android.FlutterActivity
 

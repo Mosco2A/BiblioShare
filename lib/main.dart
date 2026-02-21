@@ -25,30 +25,38 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  // Initialiser Firebase
+  // Initialiser Firebase en priorité (nécessaire pour l'auth)
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
-    );
+    ).timeout(const Duration(seconds: 10));
   } catch (e) {
     debugPrint('Firebase init error: $e');
   }
 
-  // Initialiser Supabase
+  // Initialiser Supabase (nécessaire pour le profil)
   try {
-    await SupabaseService.initialize();
+    await SupabaseService.initialize()
+        .timeout(const Duration(seconds: 5));
   } catch (e) {
     debugPrint('Supabase init error: $e');
   }
 
-  // Initialiser AdMob
-  try {
-    await AdService.initialize();
-  } catch (e) {
-    debugPrint('AdMob init error: $e');
-  }
-
+  // Lancer l'app IMMÉDIATEMENT — AdMob s'initialise en arrière-plan
   runApp(const BiblioShareApp());
+
+  // AdMob en arrière-plan (non bloquant)
+  _initAdMobInBackground();
+}
+
+/// Initialise AdMob sans bloquer le rendu de l'app
+Future<void> _initAdMobInBackground() async {
+  try {
+    await AdService.initialize()
+        .timeout(const Duration(seconds: 10));
+  } catch (e) {
+    debugPrint('AdMob init error (background): $e');
+  }
 }
 
 class BiblioShareApp extends StatefulWidget {

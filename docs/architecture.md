@@ -536,6 +536,7 @@ supabase secrets set GOOGLE_BOOKS_API_KEY=AIza... --project-ref osbcejhzxxpdtvbd
 
 | Date | Version | Modifications | Auteur |
 |---|---|---|---|
+| 2026-02-21 | 1.0.1 | Fix crash demarrage: MainActivity dans le mauvais package + timeouts init | Claude Code |
 | 2026-02-20 | 1.0.0 | App fonctionnelle end-to-end + documentation complete | Claude Code |
 | 2026-02-20 | 0.9.5 | Fix crash AdMob, fix auth SHA-1, fix package name | Claude Code |
 | 2026-02-20 | 0.9.0 | UI design system (palette cuir, Merriweather, logo SVG) | Claude Code |

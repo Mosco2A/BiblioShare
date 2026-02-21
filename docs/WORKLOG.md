@@ -5,6 +5,28 @@
 
 ---
 
+## 2026-02-21 (session 2)
+
+**Commits :** fix crash demarrage
+
+### Ce qui a ete fait
+
+**Fix crash app au demarrage**
+- Diagnostic : `MainActivity.kt` etait dans `com/biblioshare/biblioshare/` au lieu de `com/only1cent/biblioshare/` → `ClassNotFoundException` au demarrage
+- Deplace `MainActivity.kt` dans le bon package `com.only1cent.biblioshare`
+- Ajout de timeouts de securite (10s Firebase, 5s Supabase, 5s AdMob) dans `main.dart` pour eviter les blocages au demarrage
+- Creation des tests d'integration (`integration_test/app_test.dart`)
+- Tests valides sur emulateur Pixel_7_Pro : app demarre, login screen s'affiche
+
+### Decisions prises
+- Regle globale ajoutee : toujours tester sur emulateur Pixel_7_Pro avant de livrer un APK
+
+### Problemes rencontres
+- Machine lente : builds Gradle ~5-8 min, integration test framework timeout (resolu avec flutter drive)
+- AdMob init timeout sur emulateur (normal, gere par le timeout de 5s)
+
+---
+
 ## 2026-02-20 (session 1)
 
 **Commits :** `c6a977b` (infra), `188604d` (Firebase config)
