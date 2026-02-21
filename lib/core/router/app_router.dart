@@ -41,7 +41,6 @@ class AppRoutes {
   static const String bookLend = '/book/:bookId/lend';
   static const String friends = '/friends';
   static const String friendSearch = '/friends/search';
-  static const String friendProfile = '/friends/:friendId';
   static const String loans = '/loans';
 }
 

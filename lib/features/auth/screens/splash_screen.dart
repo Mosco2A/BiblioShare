@@ -2,12 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../providers/auth_provider.dart';
 
 /// Ecran de chargement au lancement de l'app
-class SplashScreen extends StatelessWidget {
+/// Timeout de sécurité : si l'auth ne résout pas en 4s, force unauthenticated
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _startSafetyTimeout();
+  }
+
+  void _startSafetyTimeout() {
+    Future.delayed(const Duration(seconds: 4), () {
+      if (!mounted) return;
+      final auth = context.read<AuthProvider>();
+      if (auth.status == AuthStatus.initial) {
+        // Auth n'a pas résolu → forcer vers login
+        debugPrint('Splash timeout: auth still initial, forcing unauthenticated');
+        auth.forceUnauthenticated();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

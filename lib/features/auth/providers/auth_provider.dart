@@ -141,6 +141,14 @@ class AuthProvider extends ChangeNotifier {
 
   // ── Actions ──
 
+  /// Force l'état unauthenticated (utilisé par le timeout du splash)
+  void forceUnauthenticated() {
+    if (_status == AuthStatus.initial) {
+      _status = AuthStatus.unauthenticated;
+      notifyListeners();
+    }
+  }
+
   void setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
