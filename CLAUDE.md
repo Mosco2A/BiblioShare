@@ -186,19 +186,19 @@ lib/
 | Models (serialisation, validation) | Integration Supabase end-to-end |
 | Fonctions utilitaires | Integration Firebase end-to-end |
 
-## Regle de livraison APK -- OBLIGATOIRE
+## Regle de livraison APK -- UNIQUEMENT SUR DEMANDE
 
-**A chaque build release :**
-1. Bumper la version dans `pubspec.yaml` selon le type de changement :
+**Quand l'utilisateur demande un APK :**
+1. Bumper la version dans `pubspec.yaml` selon les changements depuis le dernier APK :
    - `patch` (+0.0.1) pour fix
    - `minor` (+0.1.0) pour feat
    - `major` (+1.0.0) pour breaking change
 2. Lancer `flutter build apk --release`
-3. Copier l'APK dans la racine du projet : `<AppName>-<version>.apk` (ex: `BiblioShare-1.1.0.apk`)
-4. Supprimer l'ancien APK versionne s'il existe
+3. Supprimer l'ancien APK versionne a la racine s'il existe
+4. Copier l'APK dans la racine : `<AppName>-<version>.apk` (ex: `BiblioShare-1.1.0.apk`)
 5. Commiter l'APK avec le code
 
-**Ne jamais demander avant de builder/livrer** -- le faire automatiquement a chaque tache qui modifie du code.
+**Ne PAS builder d'APK automatiquement.** Seulement quand l'utilisateur le demande explicitement.
 
 ## Regle de commit -- OBLIGATOIRE
 
