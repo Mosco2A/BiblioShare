@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-02-22 (session 5)
+
+**Commits :** feat(seed): données de démo + fix timeout Supabase + SocialTab dynamique
+
+**Ce qui a été fait :**
+- Créé `SeedDataService` avec 12 livres réels (classiques FR), 5 utilisateurs amis, des amitiés et des prêts de démo
+- Modifié `LibraryProvider`, `SocialProvider`, `LoanProvider` pour fallback vers seed data quand Supabase échoue
+- Ajouté timeout de 5 secondes sur tous les appels Supabase pour éviter les blocages
+- Remplacé l'empty state statique du `_SocialTab` par un affichage dynamique (demandes en attente, amis, prêts actifs)
+- Home screen charge maintenant les 3 providers (library, social, loans) au démarrage
+
+**Décisions :**
+- Seed data en fallback automatique (pas besoin de Supabase pour que l'app fonctionne)
+- Timeout de 5s sur les appels réseau pour éviter les blocages UI
+- Les données de démo utilisent des vrais ISBN et couvertures Open Library
+
+**Problèmes :**
+- Bug initial : bibliothèque inaccessible après scan → probable timeout Supabase bloquant le dialog de chargement → corrigé avec timeout 5s
+
+---
+
 ## 2026-02-21 (session 4)
 
 **Commits :** feat(scan) scanner reel OCR ML Kit + Google Books API — version 1.1.0

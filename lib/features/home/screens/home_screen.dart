@@ -3,9 +3,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/services/seed_data_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../library/providers/library_provider.dart';
+import '../../social/providers/loan_provider.dart';
+import '../../social/providers/social_provider.dart';
 
 /// Écran principal avec navigation par onglets
 class HomeScreen extends StatefulWidget {
@@ -26,7 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
       _booksLoaded = true;
       final auth = context.read<AuthProvider>();
       if (auth.userId != null) {
-        context.read<LibraryProvider>().loadBooks(auth.userId!);
+        final userId = auth.userId!;
+        context.read<LibraryProvider>().loadBooks(userId);
+        context.read<SocialProvider>().loadFriends(userId);
+        context.read<LoanProvider>().loadLoans(userId);
       }
     }
   }
@@ -198,24 +204,237 @@ class _SocialTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final social = context.watch<SocialProvider>();
+    final loans = context.watch<LoanProvider>();
+
     return SafeArea(
       child: CustomScrollView(
         slivers: [
-          const SliverAppBar.large(
-            title: Text('Social'),
+          SliverAppBar.large(
+            title: const Text('Social'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.person_add_outlined),
+                onPressed: () => context.push('/friends/search'),
+              ),
+            ],
           ),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: _EmptyState(
-              icon: Icons.people_rounded,
-              title: 'Invite tes amis lecteurs',
-              subtitle:
-                  'Partage ta bibliothèque, emprunte des livres et recommande tes coups de cœur.',
-              buttonLabel: 'Inviter un ami',
-              onPressed: () => context.push('/friends'),
-            ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
+
+          // Demandes en attente
+          if (social.pendingRequests.isNotEmpty) ...[
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                child: Text(
+                  'Demandes en attente (${social.pendingCount})',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ),
+            ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (ctx, i) {
+                  final req = social.pendingRequests[i];
+                  final user = SeedDataService.getUserById(req.requesterId);
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: AppColors.primaryLight,
+                      child: Text(
+                        (user?.displayName ?? '?')[0].toUpperCase(),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    title: Text(user?.displayName ?? req.requesterId),
+                    subtitle: Text(user?.bio ?? 'Veut devenir ton ami'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.check_circle, color: AppColors.success),
+                          onPressed: () => social.acceptRequest(req.id),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.cancel, color: AppColors.error),
+                          onPressed: () => social.rejectRequest(req.id),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                childCount: social.pendingRequests.length,
+              ),
+            ),
+            const SliverToBoxAdapter(child: Divider()),
+          ],
+
+          // Mes amis
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Mes amis (${social.friendCount})',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  TextButton(
+                    onPressed: () => context.push('/friends'),
+                    child: const Text('Voir tout'),
+                  ),
+                ],
+              ),
+            ),
           ),
+          if (social.friends.isEmpty)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: _EmptyState(
+                  icon: Icons.people_rounded,
+                  title: 'Aucun ami pour l\'instant',
+                  subtitle: 'Cherche des amis lecteurs pour partager tes livres.',
+                  buttonLabel: 'Chercher un ami',
+                  onPressed: () => context.push('/friends/search'),
+                ),
+              ),
+            )
+          else
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (ctx, i) {
+                  final f = social.friends[i];
+                  final myId = context.read<AuthProvider>().userId!;
+                  final friendId = f.otherUserId(myId);
+                  final user = SeedDataService.getUserById(friendId);
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: AppColors.primaryLight,
+                      child: Text(
+                        (user?.displayName ?? '?')[0].toUpperCase(),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    title: Text(user?.displayName ?? friendId),
+                    subtitle: Text(user?.location ?? ''),
+                    trailing: const Icon(Icons.chevron_right, size: 18),
+                    onTap: () => context.push('/friends'),
+                  );
+                },
+                childCount: social.friends.length,
+              ),
+            ),
+
+          // Prêts actifs
+          if (loans.activeLoanCount + loans.activeBorrowingCount > 0) ...[
+            const SliverToBoxAdapter(child: Divider()),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Prêts & emprunts actifs',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    TextButton(
+                      onPressed: () => context.push('/loans'),
+                      child: const Text('Gérer'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    _MiniStat(
+                      icon: Icons.arrow_upward,
+                      label: 'Prêtés',
+                      value: '${loans.activeLoanCount}',
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 12),
+                    _MiniStat(
+                      icon: Icons.arrow_downward,
+                      label: 'Empruntés',
+                      value: '${loans.activeBorrowingCount}',
+                      color: AppColors.accent,
+                    ),
+                    if (loans.overdueCount > 0) ...[
+                      const SizedBox(width: 12),
+                      _MiniStat(
+                        icon: Icons.warning_amber,
+                        label: 'En retard',
+                        value: '${loans.overdueCount}',
+                        color: AppColors.error,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
+
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
         ],
+      ),
+    );
+  }
+}
+
+class _MiniStat extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  const _MiniStat({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            Text(
+              label,
+              style: TextStyle(fontSize: 11, color: color),
+            ),
+          ],
+        ),
       ),
     );
   }

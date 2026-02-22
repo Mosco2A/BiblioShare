@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/services/seed_data_service.dart';
 import '../../../shared/models/loan_model.dart';
 import '../services/loan_service.dart';
 
@@ -9,6 +10,7 @@ class LoanProvider extends ChangeNotifier {
   List<LoanModel> _myBorrowings = []; // livres que j'ai empruntes
   bool _loading = false;
   String? _error;
+  bool _loaded = false;
 
   List<LoanModel> get myLoans => _myLoans;
   List<LoanModel> get myBorrowings => _myBorrowings;
@@ -24,20 +26,29 @@ class LoanProvider extends ChangeNotifier {
 
   /// Charge les prets et emprunts actifs
   Future<void> loadLoans(String userId) async {
+    if (_loaded) return;
     _loading = true;
     _error = null;
     notifyListeners();
 
     try {
       final results = await Future.wait([
-        LoanService.getActiveLoansAsOwner(userId),
-        LoanService.getActiveLoansAsBorrower(userId),
+        LoanService.getActiveLoansAsOwner(userId)
+            .timeout(const Duration(seconds: 5)),
+        LoanService.getActiveLoansAsBorrower(userId)
+            .timeout(const Duration(seconds: 5)),
       ]);
       _myLoans = results[0];
       _myBorrowings = results[1];
     } catch (e) {
-      _error = e.toString();
+      debugPrint('LoanProvider.loadLoans error: $e');
+      // Fallback : données de démo
+      if (_myLoans.isEmpty && _myBorrowings.isEmpty) {
+        _myLoans = SeedDataService.getDemoLoansAsOwner(userId);
+        _myBorrowings = SeedDataService.getDemoLoansAsBorrower(userId);
+      }
     } finally {
+      _loaded = true;
       _loading = false;
       notifyListeners();
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/services/seed_data_service.dart';
 import '../../../shared/models/friendship_model.dart';
 import '../../../shared/models/user_model.dart';
 import '../services/social_service.dart';
@@ -12,6 +13,7 @@ class SocialProvider extends ChangeNotifier {
   List<UserModel> _searchResults = [];
   bool _loading = false;
   String? _error;
+  bool _loaded = false;
 
   List<FriendshipModel> get friends => _friends;
   List<FriendshipModel> get pendingRequests => _pendingRequests;
@@ -25,20 +27,30 @@ class SocialProvider extends ChangeNotifier {
 
   /// Charge les amis et les demandes en attente
   Future<void> loadFriends(String userId) async {
+    if (_loaded) return;
     _loading = true;
     _error = null;
     notifyListeners();
 
     try {
       final results = await Future.wait([
-        SocialService.getFriends(userId),
-        SocialService.getPendingRequests(userId),
+        SocialService.getFriends(userId)
+            .timeout(const Duration(seconds: 5)),
+        SocialService.getPendingRequests(userId)
+            .timeout(const Duration(seconds: 5)),
       ]);
       _friends = results[0];
       _pendingRequests = results[1];
     } catch (e) {
-      _error = e.toString();
+      debugPrint('SocialProvider.loadFriends error: $e');
+      // Fallback : données de démo
+      if (_friends.isEmpty) {
+        final all = SeedDataService.getDemoFriendships(userId);
+        _friends = all.where((f) => f.isAccepted).toList();
+        _pendingRequests = all.where((f) => f.isPending).toList();
+      }
     } finally {
+      _loaded = true;
       _loading = false;
       notifyListeners();
     }

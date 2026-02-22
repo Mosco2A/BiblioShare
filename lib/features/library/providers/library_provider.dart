@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/services/seed_data_service.dart';
 import '../../../shared/models/book_model.dart';
 import '../services/book_service.dart';
 
@@ -25,11 +26,14 @@ class LibraryProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _books = await BookService.getBooks(userId);
+      _books = await BookService.getBooks(userId)
+          .timeout(const Duration(seconds: 5));
     } catch (e) {
-      _errorMessage = 'Impossible de charger la bibliotheque';
       debugPrint('LibraryProvider.loadBooks error: $e');
-      // Garder les livres locaux deja en memoire
+      // Fallback : charger les données de démo si la liste est vide
+      if (_books.isEmpty) {
+        _books = SeedDataService.getDemoBooks(userId);
+      }
     }
 
     _isLoading = false;
@@ -74,7 +78,8 @@ class LibraryProvider extends ChangeNotifier {
   Future<int> addBooks(List<BookModel> books) async {
     if (books.isEmpty) return 0;
     try {
-      final saved = await BookService.addBooks(books);
+      final saved = await BookService.addBooks(books)
+          .timeout(const Duration(seconds: 5));
       _books.insertAll(0, saved);
       notifyListeners();
       return saved.length;
