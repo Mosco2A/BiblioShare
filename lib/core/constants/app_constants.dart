@@ -4,7 +4,7 @@ class AppConstants {
 
   // App info
   static const String appName = 'BiblioShare';
-  static const String appVersion = '1.0.0';
+  static const String appVersion = '1.2.1';
 
   // Supabase — à remplacer par les vraies valeurs
   static const String supabaseUrl = 'https://osbcejhzxxpdtvbdwaaw.supabase.co';

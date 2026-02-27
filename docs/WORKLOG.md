@@ -5,6 +5,22 @@
 
 ---
 
+## 2026-02-27 (session 7)
+
+**Commits :** fix(constants): appVersion 1.0.0→1.2.1 + SettingsScreen via constante + ARCHITECTURE.md header
+
+**Ce qui a été fait :**
+- Corrigé `AppConstants.appVersion` de '1.0.0' vers '1.2.1' (correspond à pubspec.yaml)
+- SettingsScreen : remplacement du hardcode '1.0.0' par `AppConstants.appVersion`
+- Import `app_constants.dart` ajouté dans `app_router.dart`
+- ARCHITECTURE.md : header version corrigé vers 1.2.1
+- `flutter analyze` : 0 issue
+
+**Décisions :**
+- Aucune modification structurelle — corrections d'audit uniquement
+
+---
+
 ## 2026-02-22 (session 6)
 
 **Commits :** fix(ui): profil bloquant + FAB scanner + tests acceptance complets

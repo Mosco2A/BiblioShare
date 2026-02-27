@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../features/auth/providers/auth_provider.dart';
+import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
@@ -250,7 +251,7 @@ class _SettingsScreen extends StatelessWidget {
             const ListTile(
               leading: Icon(Icons.info_outline),
               title: Text('Version'),
-              subtitle: Text('1.0.0'),
+              subtitle: Text(AppConstants.appVersion),
             ),
             ListTile(
               leading: const Icon(Icons.privacy_tip_outlined),
