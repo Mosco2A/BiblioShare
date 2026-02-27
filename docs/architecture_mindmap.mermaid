@@ -1,0 +1,166 @@
+mindmap
+  root((BiblioShare))
+    Architecture
+      Frontend
+        Flutter / Dart SDK >=3.10.1
+        GoRouter navigation
+        Provider state management
+      Backend
+        Firebase Auth biblio-share-qdbtjz
+        Supabase PostgreSQL osbcejhzxxpdtvbdwaaw
+      Services
+        Claude Vision AI scan etagere
+        Google Books API enrichissement
+        AdMob bannieres interstitiels
+        FCM push notifications
+    Ecrans
+      Authentification
+        SplashScreen /
+        LoginScreen /login
+          Google Sign-In
+          Apple Sign-In
+          Phone OTP
+          Anonymous
+        OtpVerificationScreen /otp
+        OnboardingScreen /onboarding
+      Home
+        HomeScreen /home
+          Tab Library bibliotheque
+          Tab Scanner scan rapide
+          Tab Social amis prets
+          Tab Profil mon profil
+      Scan
+        ScanScreen /scan
+          Camera photo etagere
+          Envoi Claude Vision AI
+        ScanResultsScreen /scan/results
+          Liste livres detectes
+          Confiance scan_confidence
+          Ajout a la bibliotheque
+      Library
+        BookDetailScreen /book/:bookId
+          Couverture infos details
+          Condition genres pages
+          Bouton Preter Modifier Supprimer
+        ReviewScreen /book/:bookId/review
+          Note etoiles commentaire
+      Profile
+        ProfileScreen /profile
+          Stats livres prets amis
+          Photo bio locale
+        EditProfileScreen /edit-profile
+          Modifier pseudo bio photo
+      Social
+        FriendsScreen /friends
+          Amis acceptes
+          Demandes envoyees recues
+        FriendSearchScreen /friends/search
+          Recherche par username
+        LendScreen pret de livre
+        LoansScreen /loans
+          Prets actifs historique
+        RecommendScreen recommandation
+      Settings
+        /settings preferences
+    Data Model
+      users
+        id display_name username email
+        phone photo_url bio
+        onboarding_completed locale
+      books
+        id user_id isbn_13
+        title authors publisher cover_url
+        genres description page_count
+        condition scan_confidence date_added
+      loans
+        id book_id owner_id borrower_id
+        status due_date notes
+      reviews
+        id book_id user_id
+        rating comment
+      friendships
+        id requester_id addressee_id
+        status pending accepted rejected
+      recommendations
+        id sender_id receiver_id book_id
+        message status
+    API Integrations
+      Firebase Auth
+        Google Sign-In
+        Apple Sign-In
+        Phone OTP
+        Anonymous
+      Supabase PostgreSQL
+        CRUD books
+        CRUD users
+        CRUD loans
+        CRUD reviews
+        CRUD friendships
+        CRUD recommendations
+      Edge Functions
+        scan-shelf Claude Vision AI
+        enrich-book Google Books API
+        sync-user synchronisation Firebase
+      AdMob
+        Bannieres bottom
+        Interstitiels entre actions
+      FCM push
+        Notifications prets
+        Notifications amis
+        Notifications recommandations
+    Design System
+      Couleurs AppColors
+        primary #8B6F4E cuir chaud
+        primaryLight #C4956A
+        primaryDark #5C4033
+        background #FFF8F0 creme
+        success warning error
+      Typographies
+        Merriweather serif
+        headlineLarge Medium Small
+        bodyMedium bodySmall
+      Composants reutilisables
+        Cards livre profil pret
+        Chips genres conditions
+        AppBar avec actions
+        Buttons primary secondary
+        NavigationBar 4 tabs
+    Custom Code
+      Providers ChangeNotifier
+        AuthProvider authentification
+        LibraryProvider bibliotheque
+        ScanProvider scan global
+        ReviewProvider avis
+        ProfileProvider profil
+        SocialProvider amis
+        LoanProvider prets
+      Services singletons
+        AuthService Firebase Auth
+        BookService CRUD livres
+        ScanService Claude Vision
+        ReviewService avis
+        ProfileService profil
+        SocialService amis
+        LoanService prets
+        RecommendationService recommandations
+        SupabaseService client Supabase
+        AdService AdMob
+      Models
+        BookModel livre
+        ScanResult resultat scan
+        DetectedBook livre detecte
+        UserModel utilisateur
+        LoanModel pret
+        FriendshipModel amitie
+        ReviewModel avis
+        RecommendationModel recommandation
+    Deploiement
+      Android
+        APK release BiblioShare.apk
+        google-services.json
+        com.only1cent.biblioshare
+      iOS
+        Runner xcodeproj
+      Supabase
+        Edge Functions scan-shelf enrich-book sync-user
+        PostgreSQL tables avec RLS

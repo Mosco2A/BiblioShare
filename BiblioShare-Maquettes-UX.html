@@ -1,0 +1,2510 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiblioShare v1.1.2 — Maquettes UX</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #e0ddd8;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px 10px;
+  }
+
+  /* Screen selector */
+  .screen-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    max-width: 800px;
+    margin-bottom: 20px;
+  }
+  .screen-selector button {
+    background: #8B2252;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .screen-selector button:hover { background: #a62d65; transform: translateY(-1px); }
+  .screen-selector button.active { background: #3C2415; box-shadow: 0 2px 8px rgba(60,36,21,0.3); }
+
+  .project-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #3C2415;
+    font-size: 28px;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  .project-sub {
+    color: #8B2252;
+    font-size: 13px;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  /* iPhone frame */
+  .iphone-frame {
+    width: 375px;
+    height: 812px;
+    background: #000;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 2px #333;
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%;
+    height: 100%;
+    background: #FFFDF8;
+    border-radius: 34px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #3C2415;
+    background: transparent;
+    position: relative;
+    z-index: 10;
+  }
+  .status-bar.light { color: #fff; }
+  .status-icons { display: flex; gap: 4px; font-size: 12px; }
+
+  /* Home indicator */
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: #3C2415;
+    border-radius: 3px;
+    opacity: 0.3;
+    z-index: 100;
+  }
+  .home-indicator.light { background: #fff; }
+
+  /* Screens */
+  .screen { display: none; height: 100%; position: relative; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 83px;
+    background: #FFFDF8;
+    border-top: 1px solid #ebe6de;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding-top: 8px;
+    z-index: 50;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .nav-item .nav-icon { font-size: 22px; line-height: 1; }
+  .nav-item .nav-label { font-size: 10px; color: #9a8e82; font-weight: 500; }
+  .nav-item.active .nav-label { color: #8B2252; font-weight: 600; }
+  .nav-item.add-btn .nav-icon {
+    width: 44px;
+    height: 44px;
+    background: #8B2252;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 26px;
+    margin-top: -12px;
+    box-shadow: 0 4px 12px rgba(139,34,82,0.3);
+  }
+
+  /* Scrollable content */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* ============ SCREEN 1: SPLASH / ONBOARDING ============ */
+  .splash-screen {
+    background: linear-gradient(160deg, #8B2252 0%, #6b1a3f 40%, #4a1230 100%);
+    height: 100%;
+    position: relative;
+  }
+  .splash-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .splash-logo {
+    font-size: 72px;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  }
+  .splash-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #fff;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .splash-tagline {
+    color: rgba(255,255,255,0.8);
+    font-size: 16px;
+    font-weight: 300;
+    margin-bottom: 48px;
+  }
+  .onboarding-slides {
+    width: 100%;
+  }
+  .slide {
+    display: none;
+    text-align: center;
+    animation: fadeSlide 0.4s ease;
+  }
+  .slide.active { display: block; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  .slide-icon { font-size: 48px; margin-bottom: 12px; }
+  .slide-text {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .slide-desc {
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .slide-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 32px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .dot.active { background: #fff; width: 24px; }
+  .splash-btn {
+    margin-top: 32px;
+    padding: 14px 48px;
+    background: #F5F0E8;
+    color: #8B2252;
+    border: none;
+    border-radius: 28px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .splash-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+
+  /* ============ SCREEN 2: LOGIN ============ */
+  .login-screen { background: #F5F0E8; height: 100%; }
+  .login-header {
+    padding: 20px 24px;
+    text-align: center;
+  }
+  .login-logo { font-size: 48px; margin-bottom: 8px; }
+  .login-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #3C2415;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .login-subtitle {
+    color: #8a7b6b;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .login-form {
+    padding: 24px;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3C2415;
+    margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #ddd5c8;
+    border-radius: 12px;
+    font-size: 15px;
+    background: #FFFDF8;
+    color: #3C2415;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: #8B2252; }
+  .form-input::placeholder { color: #bfb5a5; }
+  .login-btn {
+    width: 100%;
+    padding: 16px;
+    background: #8B2252;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+  .login-btn:hover { background: #a02860; }
+  .forgot-link {
+    text-align: center;
+    margin-top: 12px;
+  }
+  .forgot-link a { color: #8B2252; font-size: 13px; text-decoration: none; font-weight: 500; }
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+    gap: 12px;
+  }
+  .divider-line { flex: 1; height: 1px; background: #ddd5c8; }
+  .divider-text { color: #9a8e82; font-size: 13px; }
+  .social-btn {
+    width: 100%;
+    padding: 14px;
+    border: 1.5px solid #ddd5c8;
+    border-radius: 12px;
+    background: #FFFDF8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #3C2415;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+  .social-btn:hover { background: #f0ebe3; }
+  .social-icon { font-size: 20px; }
+  .signup-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #8a7b6b;
+  }
+  .signup-link a { color: #8B2252; font-weight: 600; text-decoration: none; }
+
+  /* ============ SCREEN 3: HOME / FEED ============ */
+  .home-screen { background: #FFFDF8; }
+  .home-header {
+    padding: 0 20px 12px;
+  }
+  .home-greeting {
+    font-size: 14px;
+    color: #8a7b6b;
+  }
+  .home-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    color: #3C2415;
+    font-weight: 700;
+  }
+  .search-bar {
+    margin: 0 20px 16px;
+    padding: 12px 16px;
+    background: #F5F0E8;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .search-bar-icon { font-size: 16px; opacity: 0.6; }
+  .search-bar-text { font-size: 14px; color: #9a8e82; }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    color: #3C2415;
+    font-weight: 600;
+  }
+  .section-link {
+    font-size: 13px;
+    color: #8B2252;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .horizontal-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 0 20px 16px;
+    scroll-snap-type: x mandatory;
+  }
+  .horizontal-scroll::-webkit-scrollbar { display: none; }
+  .book-card-h {
+    min-width: 130px;
+    scroll-snap-align: start;
+    cursor: pointer;
+  }
+  .book-cover-h {
+    width: 130px;
+    height: 190px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(60,36,21,0.12);
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .book-cover-h img, .book-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .book-cover-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    padding: 12px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .cover-1 { background: linear-gradient(135deg, #2c3e50, #3498db); }
+  .cover-2 { background: linear-gradient(135deg, #8B2252, #c0392b); }
+  .cover-3 { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+  .cover-4 { background: linear-gradient(135deg, #8e44ad, #9b59b6); }
+  .cover-5 { background: linear-gradient(135deg, #d35400, #e67e22); }
+  .cover-6 { background: linear-gradient(135deg, #16a085, #1abc9c); }
+  .cover-7 { background: linear-gradient(135deg, #2c3e50, #34495e); }
+  .cover-8 { background: linear-gradient(135deg, #c0392b, #e74c3c); }
+  .cover-9 { background: linear-gradient(135deg, #7D9B76, #5a7d52); }
+  .book-card-h .book-title-h {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3C2415;
+    line-height: 1.3;
+  }
+  .book-card-h .book-author-h {
+    font-size: 11px;
+    color: #8a7b6b;
+    margin-top: 2px;
+  }
+  .distance-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+  .availability-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #7D9B76;
+    border: 2px solid #fff;
+  }
+
+  /* ============ SCREEN 4: SEARCH ============ */
+  .search-screen { background: #FFFDF8; }
+  .search-header-full {
+    padding: 0 20px 12px;
+  }
+  .search-input-full {
+    width: 100%;
+    padding: 14px 16px 14px 42px;
+    border: 1.5px solid #ddd5c8;
+    border-radius: 14px;
+    font-size: 15px;
+    background: #F5F0E8;
+    color: #3C2415;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+  }
+  .search-input-wrapper {
+    position: relative;
+  }
+  .search-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    opacity: 0.5;
+  }
+  .filter-chips {
+    display: flex;
+    gap: 8px;
+    padding: 0 20px 12px;
+    overflow-x: auto;
+  }
+  .filter-chips::-webkit-scrollbar { display: none; }
+  .chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1.5px solid #ddd5c8;
+    background: #FFFDF8;
+    color: #3C2415;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+  .chip.active { background: #8B2252; color: #fff; border-color: #8B2252; }
+  .tags-section { padding: 0 20px 16px; }
+  .tags-title { font-size: 13px; font-weight: 600; color: #8a7b6b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    background: #F5F0E8;
+    color: #3C2415;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .search-results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 0 20px;
+  }
+  .search-result-item { cursor: pointer; }
+  .search-result-cover {
+    width: 100%;
+    aspect-ratio: 2/3;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(60,36,21,0.1);
+    margin-bottom: 6px;
+  }
+  .search-result-title { font-size: 11px; font-weight: 600; color: #3C2415; line-height: 1.3; }
+  .search-result-author { font-size: 10px; color: #8a7b6b; }
+
+  /* ============ SCREEN 5: BOOK DETAIL ============ */
+  .detail-screen { background: #FFFDF8; }
+  .detail-hero {
+    height: 300px;
+    background: linear-gradient(135deg, #8B2252 0%, #4a1230 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .detail-back {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    font-size: 18px;
+    backdrop-filter: blur(4px);
+    border: none;
+  }
+  .detail-fav {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    backdrop-filter: blur(4px);
+    border: none;
+  }
+  .detail-cover {
+    width: 150px;
+    height: 220px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  .detail-info {
+    padding: 20px;
+  }
+  .detail-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    color: #3C2415;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .detail-author {
+    font-size: 15px;
+    color: #8B2252;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .detail-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .meta-chip {
+    padding: 4px 12px;
+    background: #F5F0E8;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #3C2415;
+    font-weight: 500;
+  }
+  .detail-state {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #7D9B76;
+    font-weight: 600;
+  }
+  .detail-desc {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #5a4d3e;
+    line-height: 1.6;
+  }
+  .detail-desc-label {
+    font-size: 12px;
+    color: #8a7b6b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .owner-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    margin: 16px 20px;
+    background: #F5F0E8;
+    border-radius: 14px;
+  }
+  .owner-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    background: #8B2252;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .owner-info { flex: 1; }
+  .owner-name { font-weight: 600; color: #3C2415; font-size: 15px; }
+  .owner-distance { font-size: 12px; color: #8a7b6b; margin-top: 2px; }
+  .owner-rating { font-size: 12px; color: #d4a017; margin-top: 2px; }
+  .borrow-btn {
+    margin: 0 20px 20px;
+    padding: 16px;
+    background: #7D9B76;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    width: calc(100% - 40px);
+  }
+  .borrow-btn:hover { background: #6b8966; }
+  .reviews-section {
+    padding: 0 20px 20px;
+  }
+  .review-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #ebe6de;
+  }
+  .review-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .review-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background: #d4a017;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .review-name { font-size: 13px; font-weight: 600; color: #3C2415; }
+  .review-date { font-size: 11px; color: #8a7b6b; margin-left: auto; }
+  .review-stars { font-size: 12px; color: #d4a017; margin-bottom: 4px; }
+  .review-text { font-size: 13px; color: #5a4d3e; line-height: 1.5; }
+
+  /* ============ SCREEN 6: ADD BOOK / SCAN ============ */
+  .scan-screen { background: #FFFDF8; }
+  .scan-header {
+    padding: 0 20px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .scan-back { background: none; border: none; font-size: 18px; cursor: pointer; color: #3C2415; }
+  .scan-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    color: #3C2415;
+    font-weight: 600;
+  }
+  .scan-placeholder { width: 18px; }
+  .scan-camera {
+    margin: 12px 20px;
+    height: 200px;
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .scan-frame {
+    width: 200px;
+    height: 80px;
+    border: 2px solid rgba(125,155,118,0.8);
+    border-radius: 8px;
+    position: relative;
+  }
+  .scan-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #7D9B76;
+    animation: scanLine 2s ease-in-out infinite;
+  }
+  @keyframes scanLine { 0%,100% { top: 0; } 50% { top: calc(100% - 2px); } }
+  .scan-hint {
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    margin-top: 12px;
+  }
+  .scan-camera-icon { font-size: 32px; margin-bottom: 8px; }
+  .scan-manual {
+    text-align: center;
+    padding: 8px 20px;
+  }
+  .scan-or { color: #8a7b6b; font-size: 13px; margin-bottom: 8px; }
+  .isbn-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 0 20px;
+  }
+  .isbn-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1.5px solid #ddd5c8;
+    border-radius: 12px;
+    font-size: 15px;
+    background: #F5F0E8;
+    font-family: 'Inter', sans-serif;
+    color: #3C2415;
+  }
+  .isbn-btn {
+    padding: 12px 20px;
+    background: #8B2252;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .preview-card {
+    margin: 16px 20px;
+    padding: 16px;
+    background: #F5F0E8;
+    border-radius: 14px;
+    display: flex;
+    gap: 14px;
+  }
+  .preview-cover {
+    width: 80px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(60,36,21,0.12);
+    flex-shrink: 0;
+  }
+  .preview-info { flex: 1; }
+  .preview-title { font-weight: 600; color: #3C2415; font-size: 15px; line-height: 1.3; }
+  .preview-author { color: #8B2252; font-size: 13px; margin-top: 4px; font-weight: 500; }
+  .preview-isbn { color: #8a7b6b; font-size: 11px; margin-top: 4px; }
+  .preview-match { color: #7D9B76; font-size: 12px; font-weight: 600; margin-top: 8px; }
+  .add-form { padding: 0 20px; }
+  .add-form .form-group { margin-bottom: 12px; }
+  .condition-chips {
+    display: flex;
+    gap: 8px;
+  }
+  .condition-chip {
+    padding: 8px 14px;
+    border: 1.5px solid #ddd5c8;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #FFFDF8;
+    color: #3C2415;
+    font-family: 'Inter', sans-serif;
+  }
+  .condition-chip.active { background: #7D9B76; color: #fff; border-color: #7D9B76; }
+  .add-photo-btn {
+    width: 64px;
+    height: 64px;
+    border: 2px dashed #ddd5c8;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #8a7b6b;
+    cursor: pointer;
+    background: #F5F0E8;
+  }
+  .add-submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: #8B2252;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    margin-top: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* ============ SCREEN 7: MY LIBRARY ============ */
+  .library-screen { background: #FFFDF8; }
+  .library-header {
+    padding: 0 20px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .library-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    color: #3C2415;
+    font-weight: 700;
+  }
+  .library-count {
+    font-size: 13px;
+    color: #8a7b6b;
+  }
+  .library-filters {
+    display: flex;
+    gap: 8px;
+    padding: 0 20px 16px;
+  }
+  .library-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 0 20px;
+  }
+  .lib-book {
+    cursor: pointer;
+    position: relative;
+  }
+  .lib-cover {
+    width: 100%;
+    aspect-ratio: 2/3;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(60,36,21,0.1);
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .lent-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(139,34,82,0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 8px;
+    backdrop-filter: blur(2px);
+  }
+  .lent-badge-icon { font-size: 20px; margin-bottom: 4px; }
+  .lent-to { font-size: 10px; font-weight: 400; opacity: 0.9; margin-top: 2px; }
+  .lib-title { font-size: 11px; font-weight: 600; color: #3C2415; line-height: 1.3; }
+  .lib-status { font-size: 10px; color: #7D9B76; font-weight: 500; margin-top: 1px; }
+  .lib-status.lent { color: #8B2252; }
+  .fab {
+    position: absolute;
+    bottom: 96px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: #8B2252;
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 28px;
+    box-shadow: 0 4px 16px rgba(139,34,82,0.35);
+    cursor: pointer;
+    border: none;
+    z-index: 40;
+    transition: all 0.2s;
+  }
+  .fab:hover { transform: scale(1.05); }
+
+  /* ============ SCREEN 8: BORROW REQUEST / CHAT ============ */
+  .chat-screen { background: #F5F0E8; }
+  .chat-header {
+    padding: 0 20px 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .chat-back { background: none; border: none; font-size: 18px; cursor: pointer; color: #3C2415; }
+  .chat-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    background: #7D9B76;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .chat-user-info { flex: 1; }
+  .chat-user-name { font-size: 15px; font-weight: 600; color: #3C2415; }
+  .chat-book-name { font-size: 11px; color: #8a7b6b; }
+  .timeline {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 12px 20px;
+    background: #FFFDF8;
+    margin: 0 0 8px;
+  }
+  .timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .timeline-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background: #ddd5c8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #8a7b6b;
+  }
+  .timeline-dot.done { background: #7D9B76; color: #fff; }
+  .timeline-dot.current { background: #8B2252; color: #fff; }
+  .timeline-label { font-size: 9px; color: #8a7b6b; font-weight: 500; text-align: center; max-width: 60px; }
+  .timeline-line { width: 24px; height: 2px; background: #ddd5c8; margin-bottom: 16px; }
+  .timeline-line.done { background: #7D9B76; }
+  .messages {
+    flex: 1;
+    padding: 8px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .msg {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+  }
+  .msg-received {
+    background: #FFFDF8;
+    color: #3C2415;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 3px rgba(60,36,21,0.08);
+  }
+  .msg-sent {
+    background: #8B2252;
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .msg-time {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-top: 4px;
+  }
+  .msg-date {
+    text-align: center;
+    font-size: 11px;
+    color: #8a7b6b;
+    padding: 8px 0;
+  }
+  .chat-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px;
+    background: #FFFDF8;
+  }
+  .chat-accept {
+    flex: 1;
+    padding: 12px;
+    background: #7D9B76;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .chat-decline {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    color: #8B2252;
+    border: 1.5px solid #8B2252;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 8px 20px 28px;
+    background: #FFFDF8;
+    align-items: center;
+  }
+  .chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1.5px solid #ddd5c8;
+    border-radius: 24px;
+    font-size: 14px;
+    background: #F5F0E8;
+    font-family: 'Inter', sans-serif;
+    color: #3C2415;
+  }
+  .chat-send {
+    width: 40px;
+    height: 40px;
+    background: #8B2252;
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  /* ============ SCREEN 9: PROFILE ============ */
+  .profile-screen { background: #FFFDF8; }
+  .profile-hero {
+    text-align: center;
+    padding: 12px 20px 20px;
+    background: linear-gradient(180deg, #F5F0E8 0%, #FFFDF8 100%);
+  }
+  .profile-avatar-lg {
+    width: 88px;
+    height: 88px;
+    border-radius: 44px;
+    background: #8B2252;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 36px;
+    font-weight: 600;
+    font-family: 'Playfair Display', Georgia, serif;
+    margin: 0 auto 12px;
+    box-shadow: 0 4px 16px rgba(139,34,82,0.2);
+  }
+  .profile-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
+    color: #3C2415;
+    font-weight: 700;
+  }
+  .profile-bio {
+    font-size: 13px;
+    color: #8a7b6b;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .profile-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 16px;
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #3C2415;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: #8a7b6b;
+    margin-top: 2px;
+  }
+  .profile-badges {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .badge-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .badge-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    background: #F5F0E8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .badge-name { font-size: 9px; color: #8a7b6b; font-weight: 500; text-align: center; max-width: 56px; }
+  .profile-section {
+    padding: 16px 20px;
+  }
+  .profile-section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 16px;
+    color: #3C2415;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .profile-books-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .profile-book-cover {
+    width: 100%;
+    aspect-ratio: 2/3;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(60,36,21,0.1);
+  }
+  .edit-profile-btn {
+    width: 100%;
+    padding: 14px;
+    border: 1.5px solid #8B2252;
+    background: transparent;
+    color: #8B2252;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+  .edit-profile-btn:hover { background: #8B2252; color: #fff; }
+
+  /* ============ SCREEN 10: NOTIFICATIONS ============ */
+  .notif-screen { background: #FFFDF8; }
+  .notif-header {
+    padding: 0 20px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .notif-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    color: #3C2415;
+    font-weight: 700;
+  }
+  .notif-mark-all {
+    font-size: 13px;
+    color: #8B2252;
+    font-weight: 500;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .notif-list { padding: 0 20px; }
+  .notif-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid #ebe6de;
+    cursor: pointer;
+    align-items: flex-start;
+  }
+  .notif-item.unread { background: transparent; }
+  .notif-item.unread::before {
+    content: '';
+    display: none;
+  }
+  .notif-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .notif-icon-request { background: #fce4ec; }
+  .notif-icon-accepted { background: #e8f5e9; }
+  .notif-icon-reminder { background: #fff3e0; }
+  .notif-icon-nearby { background: #e8eaf6; }
+  .notif-icon-rating { background: #fff8e1; }
+  .notif-content { flex: 1; }
+  .notif-text { font-size: 13px; color: #3C2415; line-height: 1.4; }
+  .notif-text strong { font-weight: 600; }
+  .notif-time { font-size: 11px; color: #8a7b6b; margin-top: 4px; }
+  .notif-unread-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: #8B2252;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  /* Section spacing */
+  .section-gap { height: 24px; }
+  .section-gap-sm { height: 12px; }
+
+  /* Responsive */
+  @media (max-width: 420px) {
+    .iphone-frame { width: 100%; height: calc(100vw * 2.165); max-height: 812px; border-radius: 30px; padding: 8px; }
+    .iphone-screen { border-radius: 24px; }
+    body { padding: 10px 5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="project-title">BiblioShare</div>
+<div class="project-sub">Maquettes UX v1.1.2 — Emma Leclerc, UX Designer</div>
+
+<div class="screen-selector" id="screenSelector">
+  <button class="active" onclick="showScreen('splash')">1. Onboarding</button>
+  <button onclick="showScreen('login')">2. Login</button>
+  <button onclick="showScreen('home')">3. Accueil</button>
+  <button onclick="showScreen('search')">4. Recherche</button>
+  <button onclick="showScreen('detail')">5. Detail livre</button>
+  <button onclick="showScreen('scan')">6. Ajouter</button>
+  <button onclick="showScreen('library')">7. Ma Biblio</button>
+  <button onclick="showScreen('chat')">8. Emprunt</button>
+  <button onclick="showScreen('profile')">9. Profil</button>
+  <button onclick="showScreen('notif')">10. Notifications</button>
+</div>
+
+<div class="iphone-frame">
+  <div class="iphone-screen">
+
+    <!-- ==================== SCREEN 1: SPLASH / ONBOARDING ==================== -->
+    <div class="screen active" id="screen-splash">
+      <div class="splash-screen" style="display:flex; flex-direction:column;">
+        <div class="status-bar light">
+          <span>9:41</span>
+          <div class="status-icons">
+            <span>&#9679;&#9679;&#9679;&#9679;</span>
+            <span>&#8226;</span>
+            <span>&#128267;</span>
+          </div>
+        </div>
+        <div class="splash-content">
+          <div class="splash-logo">&#128214;</div>
+          <div class="splash-title">BiblioShare</div>
+          <div class="splash-tagline">Partagez. Lisez. Connectez.</div>
+
+          <div class="onboarding-slides">
+            <div class="slide active" id="slide-1">
+              <div class="slide-icon">&#128218;</div>
+              <div class="slide-text">Partagez vos livres</div>
+              <div class="slide-desc">Donnez une seconde vie a vos livres en les partageant avec votre communaute locale.</div>
+            </div>
+            <div class="slide" id="slide-2">
+              <div class="slide-icon">&#127758;</div>
+              <div class="slide-text">Decouvrez de nouvelles lectures</div>
+              <div class="slide-desc">Explorez des milliers de livres disponibles pres de chez vous, filtrez par genre et distance.</div>
+            </div>
+            <div class="slide" id="slide-3">
+              <div class="slide-icon">&#129309;</div>
+              <div class="slide-text">Rejoignez la communaute</div>
+              <div class="slide-desc">Rencontrez des lecteurs passionnes, echangez des avis et construisez des liens.</div>
+            </div>
+          </div>
+
+          <div class="slide-dots">
+            <div class="dot active" onclick="goSlide(1)"></div>
+            <div class="dot" onclick="goSlide(2)"></div>
+            <div class="dot" onclick="goSlide(3)"></div>
+          </div>
+
+          <button class="splash-btn" onclick="showScreen('login')">Commencer</button>
+        </div>
+        <div class="home-indicator light"></div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN 2: LOGIN ==================== -->
+    <div class="screen" id="screen-login">
+      <div class="login-screen" style="display:flex; flex-direction:column; height:100%;">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <span>&#9679;&#9679;&#9679;&#9679;</span>
+            <span>&#8226;</span>
+            <span>&#128267;</span>
+          </div>
+        </div>
+        <div style="flex:1; overflow-y:auto;">
+          <div class="login-header">
+            <div class="login-logo">&#128214;</div>
+            <div class="login-title">Bienvenue</div>
+            <div class="login-subtitle">Connectez-vous pour commencer le partage</div>
+          </div>
+          <div class="login-form">
+            <div class="form-group">
+              <label class="form-label">Adresse email</label>
+              <input type="text" class="form-input" placeholder="votre@email.com" readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mot de passe</label>
+              <input type="password" class="form-input" placeholder="Votre mot de passe" value="monmotdepasse" readonly>
+            </div>
+            <button class="login-btn" onclick="showScreen('home')">Se connecter</button>
+            <div class="forgot-link"><a href="#">Mot de passe oublie ?</a></div>
+
+            <div class="divider">
+              <div class="divider-line"></div>
+              <span class="divider-text">ou</span>
+              <div class="divider-line"></div>
+            </div>
+
+            <button class="social-btn">
+              <span class="social-icon">G</span>
+              Continuer avec Google
+            </button>
+            <button class="social-btn">
+              <span class="social-icon">&#63743;</span>
+              Continuer avec Apple
+            </button>
+
+            <div class="signup-link">
+              Pas encore de compte ? <a href="#">Creer un compte</a>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN 3: HOME / FEED ==================== -->
+    <div class="screen" id="screen-home">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons">
+          <span>&#9679;&#9679;&#9679;&#9679;</span>
+          <span>&#8226;</span>
+          <span>&#128267;</span>
+        </div>
+      </div>
+      <div class="scroll-content" style="padding-bottom:83px;">
+        <div class="home-header">
+          <div class="home-greeting">Bonjour, Claire &#128075;</div>
+          <div class="home-title">Decouvrir</div>
+        </div>
+
+        <div class="search-bar" onclick="showScreen('search')">
+          <span class="search-bar-icon">&#128269;</span>
+          <span class="search-bar-text">Rechercher un livre, un auteur...</span>
+        </div>
+
+        <!-- Recently added -->
+        <div class="section-header">
+          <span class="section-title">Recemment ajoutes</span>
+          <span class="section-link">Voir tout</span>
+        </div>
+        <div class="horizontal-scroll">
+          <div class="book-card-h" onclick="showScreen('detail')">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-1">
+                <span style="font-size:32px; margin-bottom:6px;">&#127754;</span>
+                Le Vieil<br>Homme<br>et la Mer
+              </div>
+              <div class="availability-dot"></div>
+            </div>
+            <div class="book-title-h">Le Vieil Homme et la Mer</div>
+            <div class="book-author-h">Ernest Hemingway</div>
+          </div>
+          <div class="book-card-h" onclick="showScreen('detail')">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-4">
+                <span style="font-size:32px; margin-bottom:6px;">&#128156;</span>
+                L'Amour<br>aux temps<br>du cholera
+              </div>
+              <div class="availability-dot"></div>
+            </div>
+            <div class="book-title-h">L'Amour aux temps du cholera</div>
+            <div class="book-author-h">Gabriel Garcia Marquez</div>
+          </div>
+          <div class="book-card-h" onclick="showScreen('detail')">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-3">
+                <span style="font-size:32px; margin-bottom:6px;">&#127795;</span>
+                La<br>Promesse<br>de l'aube
+              </div>
+              <div class="availability-dot"></div>
+            </div>
+            <div class="book-title-h">La Promesse de l'aube</div>
+            <div class="book-author-h">Romain Gary</div>
+          </div>
+          <div class="book-card-h">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-8">
+                <span style="font-size:32px; margin-bottom:6px;">&#128293;</span>
+                Fahrenheit<br>451
+              </div>
+              <div class="availability-dot"></div>
+            </div>
+            <div class="book-title-h">Fahrenheit 451</div>
+            <div class="book-author-h">Ray Bradbury</div>
+          </div>
+        </div>
+
+        <!-- Nearby -->
+        <div class="section-header">
+          <span class="section-title">Pres de chez vous</span>
+          <span class="section-link">Voir tout</span>
+        </div>
+        <div class="horizontal-scroll">
+          <div class="book-card-h" onclick="showScreen('detail')">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-6">
+                <span style="font-size:32px; margin-bottom:6px;">&#127796;</span>
+                Le Petit<br>Prince
+              </div>
+              <div class="distance-badge">&#128205; 0.8 km</div>
+            </div>
+            <div class="book-title-h">Le Petit Prince</div>
+            <div class="book-author-h">Saint-Exupery</div>
+          </div>
+          <div class="book-card-h" onclick="showScreen('detail')">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-2">
+                <span style="font-size:32px; margin-bottom:6px;">&#128139;</span>
+                Madame<br>Bovary
+              </div>
+              <div class="distance-badge">&#128205; 1.2 km</div>
+            </div>
+            <div class="book-title-h">Madame Bovary</div>
+            <div class="book-author-h">Gustave Flaubert</div>
+          </div>
+          <div class="book-card-h" onclick="showScreen('detail')">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-7">
+                <span style="font-size:32px; margin-bottom:6px;">&#128373;</span>
+                Le Nom<br>de la Rose
+              </div>
+              <div class="distance-badge">&#128205; 2.1 km</div>
+            </div>
+            <div class="book-title-h">Le Nom de la Rose</div>
+            <div class="book-author-h">Umberto Eco</div>
+          </div>
+          <div class="book-card-h">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-5">
+                <span style="font-size:32px; margin-bottom:6px;">&#127758;</span>
+                Voyage au<br>bout de<br>la nuit
+              </div>
+              <div class="distance-badge">&#128205; 3.5 km</div>
+            </div>
+            <div class="book-title-h">Voyage au bout de la nuit</div>
+            <div class="book-author-h">Louis-Ferdinand Celine</div>
+          </div>
+        </div>
+
+        <!-- Popular -->
+        <div class="section-header">
+          <span class="section-title">Populaires cette semaine</span>
+          <span class="section-link">Voir tout</span>
+        </div>
+        <div class="horizontal-scroll" style="padding-bottom: 8px;">
+          <div class="book-card-h" onclick="showScreen('detail')">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-9">
+                <span style="font-size:32px; margin-bottom:6px;">&#127793;</span>
+                L'Etranger
+              </div>
+            </div>
+            <div class="book-title-h">L'Etranger</div>
+            <div class="book-author-h">Albert Camus</div>
+          </div>
+          <div class="book-card-h" onclick="showScreen('detail')">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-1">
+                <span style="font-size:32px; margin-bottom:6px;">&#9878;</span>
+                Les Miserables
+              </div>
+            </div>
+            <div class="book-title-h">Les Miserables</div>
+            <div class="book-author-h">Victor Hugo</div>
+          </div>
+          <div class="book-card-h" onclick="showScreen('detail')">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-4">
+                <span style="font-size:32px; margin-bottom:6px;">&#128140;</span>
+                Belle<br>du Seigneur
+              </div>
+            </div>
+            <div class="book-title-h">Belle du Seigneur</div>
+            <div class="book-author-h">Albert Cohen</div>
+          </div>
+          <div class="book-card-h">
+            <div class="book-cover-h">
+              <div class="book-cover-placeholder cover-5">
+                <span style="font-size:32px; margin-bottom:6px;">&#128165;</span>
+                Germinal
+              </div>
+            </div>
+            <div class="book-title-h">Germinal</div>
+            <div class="book-author-h">Emile Zola</div>
+          </div>
+        </div>
+
+        <div class="section-gap"></div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <button class="nav-item active" onclick="showScreen('home')">
+          <span class="nav-icon">&#127968;</span>
+          <span class="nav-label">Accueil</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('search')">
+          <span class="nav-icon">&#128269;</span>
+          <span class="nav-label">Recherche</span>
+        </button>
+        <button class="nav-item add-btn" onclick="showScreen('scan')">
+          <span class="nav-icon">+</span>
+          <span class="nav-label"></span>
+        </button>
+        <button class="nav-item" onclick="showScreen('library')">
+          <span class="nav-icon">&#128218;</span>
+          <span class="nav-label">Ma Biblio</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('profile')">
+          <span class="nav-icon">&#128100;</span>
+          <span class="nav-label">Profil</span>
+        </button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ==================== SCREEN 4: SEARCH ==================== -->
+    <div class="screen" id="screen-search">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons">
+          <span>&#9679;&#9679;&#9679;&#9679;</span>
+          <span>&#8226;</span>
+          <span>&#128267;</span>
+        </div>
+      </div>
+      <div class="scroll-content" style="padding-bottom:83px;">
+        <div class="search-header-full">
+          <div class="search-input-wrapper">
+            <span class="search-input-icon">&#128269;</span>
+            <input type="text" class="search-input-full" placeholder="Titre, auteur, ISBN..." value="roman" readonly>
+          </div>
+        </div>
+
+        <div class="filter-chips">
+          <span class="chip active">Tous</span>
+          <span class="chip">Roman</span>
+          <span class="chip">SF</span>
+          <span class="chip">Essai</span>
+          <span class="chip">BD</span>
+          <span class="chip">Poesie</span>
+          <span class="chip">Jeunesse</span>
+        </div>
+
+        <div class="filter-chips">
+          <span class="chip">&#128205; &lt; 2 km</span>
+          <span class="chip active">&#128205; &lt; 5 km</span>
+          <span class="chip">&#128205; &lt; 10 km</span>
+          <span class="chip">Disponible</span>
+        </div>
+
+        <div class="tags-section">
+          <div class="tags-title">Tendances</div>
+          <div class="tags-wrap">
+            <span class="tag">&#128293; Litterature francaise</span>
+            <span class="tag">Polar</span>
+            <span class="tag">Developpement personnel</span>
+            <span class="tag">Classiques</span>
+            <span class="tag">Manga</span>
+            <span class="tag">Philosophie</span>
+          </div>
+        </div>
+
+        <div class="section-header" style="margin-top:4px;">
+          <span class="section-title">Resultats</span>
+          <span class="section-link" style="color:#8a7b6b; font-weight:400;">12 livres</span>
+        </div>
+        <div class="section-gap-sm"></div>
+
+        <div class="search-results-grid">
+          <div class="search-result-item" onclick="showScreen('detail')">
+            <div class="search-result-cover">
+              <div class="book-cover-placeholder cover-9" style="width:100%;height:100%;">
+                <span style="font-size:22px; margin-bottom:4px;">&#127793;</span>
+                L'Etranger
+              </div>
+            </div>
+            <div class="search-result-title">L'Etranger</div>
+            <div class="search-result-author">Albert Camus</div>
+          </div>
+          <div class="search-result-item" onclick="showScreen('detail')">
+            <div class="search-result-cover">
+              <div class="book-cover-placeholder cover-2" style="width:100%;height:100%;">
+                <span style="font-size:22px; margin-bottom:4px;">&#128139;</span>
+                Madame<br>Bovary
+              </div>
+            </div>
+            <div class="search-result-title">Madame Bovary</div>
+            <div class="search-result-author">G. Flaubert</div>
+          </div>
+          <div class="search-result-item" onclick="showScreen('detail')">
+            <div class="search-result-cover">
+              <div class="book-cover-placeholder cover-3" style="width:100%;height:100%;">
+                <span style="font-size:22px; margin-bottom:4px;">&#127795;</span>
+                La Promesse<br>de l'aube
+              </div>
+            </div>
+            <div class="search-result-title">La Promesse de l'aube</div>
+            <div class="search-result-author">Romain Gary</div>
+          </div>
+          <div class="search-result-item" onclick="showScreen('detail')">
+            <div class="search-result-cover">
+              <div class="book-cover-placeholder cover-1" style="width:100%;height:100%;">
+                <span style="font-size:22px; margin-bottom:4px;">&#9878;</span>
+                Les<br>Miserables
+              </div>
+            </div>
+            <div class="search-result-title">Les Miserables</div>
+            <div class="search-result-author">Victor Hugo</div>
+          </div>
+          <div class="search-result-item" onclick="showScreen('detail')">
+            <div class="search-result-cover">
+              <div class="book-cover-placeholder cover-4" style="width:100%;height:100%;">
+                <span style="font-size:22px; margin-bottom:4px;">&#128156;</span>
+                L'Amour aux<br>temps du<br>cholera
+              </div>
+            </div>
+            <div class="search-result-title">L'Amour aux temps du cholera</div>
+            <div class="search-result-author">G. Garcia Marquez</div>
+          </div>
+          <div class="search-result-item" onclick="showScreen('detail')">
+            <div class="search-result-cover">
+              <div class="book-cover-placeholder cover-6" style="width:100%;height:100%;">
+                <span style="font-size:22px; margin-bottom:4px;">&#127796;</span>
+                Le Petit<br>Prince
+              </div>
+            </div>
+            <div class="search-result-title">Le Petit Prince</div>
+            <div class="search-result-author">Saint-Exupery</div>
+          </div>
+          <div class="search-result-item" onclick="showScreen('detail')">
+            <div class="search-result-cover">
+              <div class="book-cover-placeholder cover-8" style="width:100%;height:100%;">
+                <span style="font-size:22px; margin-bottom:4px;">&#128293;</span>
+                Fahrenheit<br>451
+              </div>
+            </div>
+            <div class="search-result-title">Fahrenheit 451</div>
+            <div class="search-result-author">Ray Bradbury</div>
+          </div>
+          <div class="search-result-item" onclick="showScreen('detail')">
+            <div class="search-result-cover">
+              <div class="book-cover-placeholder cover-7" style="width:100%;height:100%;">
+                <span style="font-size:22px; margin-bottom:4px;">&#128373;</span>
+                Le Nom<br>de la Rose
+              </div>
+            </div>
+            <div class="search-result-title">Le Nom de la Rose</div>
+            <div class="search-result-author">Umberto Eco</div>
+          </div>
+          <div class="search-result-item" onclick="showScreen('detail')">
+            <div class="search-result-cover">
+              <div class="book-cover-placeholder cover-5" style="width:100%;height:100%;">
+                <span style="font-size:22px; margin-bottom:4px;">&#128165;</span>
+                Germinal
+              </div>
+            </div>
+            <div class="search-result-title">Germinal</div>
+            <div class="search-result-author">Emile Zola</div>
+          </div>
+        </div>
+        <div class="section-gap"></div>
+      </div>
+
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('home')">
+          <span class="nav-icon">&#127968;</span>
+          <span class="nav-label">Accueil</span>
+        </button>
+        <button class="nav-item active" onclick="showScreen('search')">
+          <span class="nav-icon">&#128269;</span>
+          <span class="nav-label">Recherche</span>
+        </button>
+        <button class="nav-item add-btn" onclick="showScreen('scan')">
+          <span class="nav-icon">+</span>
+          <span class="nav-label"></span>
+        </button>
+        <button class="nav-item" onclick="showScreen('library')">
+          <span class="nav-icon">&#128218;</span>
+          <span class="nav-label">Ma Biblio</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('profile')">
+          <span class="nav-icon">&#128100;</span>
+          <span class="nav-label">Profil</span>
+        </button>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ==================== SCREEN 5: BOOK DETAIL ==================== -->
+    <div class="screen" id="screen-detail">
+      <div class="detail-screen" style="display:flex; flex-direction:column; height:100%;">
+        <div class="scroll-content">
+          <div class="detail-hero">
+            <div class="status-bar light" style="position:absolute; top:0; left:0; right:0;">
+              <span>9:41</span>
+              <div class="status-icons">
+                <span>&#9679;&#9679;&#9679;&#9679;</span>
+                <span>&#8226;</span>
+                <span>&#128267;</span>
+              </div>
+            </div>
+            <button class="detail-back" onclick="showScreen('home')">&#8592;</button>
+            <button class="detail-fav">&#9825;</button>
+            <div class="detail-cover">
+              <div class="book-cover-placeholder cover-6" style="width:100%;height:100%;font-size:14px;">
+                <span style="font-size:40px; margin-bottom:8px;">&#127796;</span>
+                Le Petit<br>Prince
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-info">
+            <div class="detail-title">Le Petit Prince</div>
+            <div class="detail-author">Antoine de Saint-Exupery</div>
+            <div class="detail-meta">
+              <span class="meta-chip">&#128214; Conte</span>
+              <span class="meta-chip">&#128196; 96 pages</span>
+              <span class="meta-chip">&#11088; 4.8</span>
+            </div>
+            <div class="detail-state">&#9679; Disponible a l'emprunt</div>
+
+            <div style="margin-top:20px;">
+              <div class="detail-desc-label">Note du proprietaire</div>
+              <div class="detail-desc">
+                Mon edition preferee, celle avec les aquarelles originales. Le livre est en tres bon etat, juste un peu de vecu sur la couverture. Un incontournable a partager !
+              </div>
+            </div>
+          </div>
+
+          <div class="owner-card">
+            <div class="owner-avatar">M</div>
+            <div class="owner-info">
+              <div class="owner-name">Mathieu Renard</div>
+              <div class="owner-distance">&#128205; 0.8 km &bull; Paris 11e</div>
+              <div class="owner-rating">&#11088; 4.9 &bull; 23 partages</div>
+            </div>
+            <span style="font-size:18px; color:#8a7b6b;">&#8250;</span>
+          </div>
+
+          <button class="borrow-btn" onclick="showScreen('chat')">
+            &#128218; Demander l'emprunt
+          </button>
+
+          <div class="reviews-section">
+            <div class="section-title" style="margin-bottom:12px;">Avis des lecteurs</div>
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar" style="background:#8B2252;">S</div>
+                <span class="review-name">Sophie Martin</span>
+                <span class="review-date">il y a 3 jours</span>
+              </div>
+              <div class="review-stars">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
+              <div class="review-text">Superbe edition, Mathieu est tres sympathique. Echange rapide et agreable, je recommande !</div>
+            </div>
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar" style="background:#7D9B76;">L</div>
+                <span class="review-name">Lucas Dupont</span>
+                <span class="review-date">il y a 2 sem.</span>
+              </div>
+              <div class="review-stars">&#11088;&#11088;&#11088;&#11088;</div>
+              <div class="review-text">Livre en bon etat comme decrit. Merci pour le partage !</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN 6: ADD BOOK / SCAN ==================== -->
+    <div class="screen" id="screen-scan">
+      <div class="scan-screen" style="display:flex; flex-direction:column; height:100%;">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <span>&#9679;&#9679;&#9679;&#9679;</span>
+            <span>&#8226;</span>
+            <span>&#128267;</span>
+          </div>
+        </div>
+
+        <div class="scroll-content">
+          <div class="scan-header">
+            <button class="scan-back" onclick="showScreen('home')">&#8592;</button>
+            <span class="scan-title">Ajouter un livre</span>
+            <span class="scan-placeholder"></span>
+          </div>
+
+          <div class="scan-camera">
+            <div class="scan-camera-icon" style="color:rgba(255,255,255,0.5);">&#128247;</div>
+            <div class="scan-frame"></div>
+            <div class="scan-hint">Placez le code-barres dans le cadre</div>
+          </div>
+
+          <div class="scan-manual">
+            <div class="scan-or">ou saisissez le code ISBN</div>
+          </div>
+          <div class="isbn-input-row">
+            <input type="text" class="isbn-input" placeholder="978-2-07-040850-4" value="978-2-07-040850-4" readonly>
+            <button class="isbn-btn">Chercher</button>
+          </div>
+
+          <div class="preview-card">
+            <div class="preview-cover">
+              <div class="book-cover-placeholder cover-6" style="width:100%;height:100%;font-size:10px;">
+                <span style="font-size:24px; margin-bottom:4px;">&#127796;</span>
+                Le Petit<br>Prince
+              </div>
+            </div>
+            <div class="preview-info">
+              <div class="preview-match">&#9989; Livre trouve !</div>
+              <div class="preview-title">Le Petit Prince</div>
+              <div class="preview-author">Antoine de Saint-Exupery</div>
+              <div class="preview-isbn">ISBN: 978-2-07-040850-4</div>
+            </div>
+          </div>
+
+          <div class="add-form">
+            <div class="form-group">
+              <label class="form-label">Etat du livre</label>
+              <div class="condition-chips">
+                <span class="condition-chip">Neuf</span>
+                <span class="condition-chip active">Tres bon</span>
+                <span class="condition-chip">Bon</span>
+                <span class="condition-chip">Correct</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Votre note personnelle</label>
+              <input type="text" class="form-input" placeholder="Pourquoi aimez-vous ce livre ?" value="Mon edition preferee avec les aquarelles" readonly style="font-size:13px;">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Photo du livre (optionnel)</label>
+              <div style="display:flex; gap:8px;">
+                <div class="add-photo-btn">&#128247;</div>
+                <div class="add-photo-btn" style="border-style:solid; border-color:#7D9B76; background:rgba(125,155,118,0.1);">
+                  <span style="font-size:16px;">&#9989;</span>
+                </div>
+              </div>
+            </div>
+
+            <button class="add-submit-btn" onclick="showScreen('library')">
+              &#128218; Ajouter a ma bibliotheque
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN 7: MY LIBRARY ==================== -->
+    <div class="screen" id="screen-library">
+      <div class="library-screen" style="display:flex; flex-direction:column; height:100%;">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <span>&#9679;&#9679;&#9679;&#9679;</span>
+            <span>&#8226;</span>
+            <span>&#128267;</span>
+          </div>
+        </div>
+        <div class="scroll-content" style="padding-bottom:83px;">
+          <div class="library-header">
+            <div>
+              <div class="library-title">Ma Bibliotheque</div>
+              <div class="library-count">12 livres</div>
+            </div>
+          </div>
+
+          <div class="library-filters">
+            <span class="chip active">Tous (12)</span>
+            <span class="chip">Disponibles (9)</span>
+            <span class="chip">Pretes (3)</span>
+          </div>
+
+          <div class="library-grid">
+            <div class="lib-book" onclick="showScreen('detail')">
+              <div class="lib-cover">
+                <div class="book-cover-placeholder cover-6" style="width:100%;height:100%;font-size:9px;">
+                  <span style="font-size:18px; margin-bottom:2px;">&#127796;</span>
+                  Le Petit<br>Prince
+                </div>
+              </div>
+              <div class="lib-title">Le Petit Prince</div>
+              <div class="lib-status">Disponible</div>
+            </div>
+            <div class="lib-book" onclick="showScreen('detail')">
+              <div class="lib-cover">
+                <div class="book-cover-placeholder cover-9" style="width:100%;height:100%;font-size:9px;">
+                  <span style="font-size:18px; margin-bottom:2px;">&#127793;</span>
+                  L'Etranger
+                </div>
+                <div class="lent-badge">
+                  <div class="lent-badge-icon">&#128228;</div>
+                  Prete
+                  <div class="lent-to">a Sophie &bull; 12 jours</div>
+                </div>
+              </div>
+              <div class="lib-title">L'Etranger</div>
+              <div class="lib-status lent">Prete a Sophie</div>
+            </div>
+            <div class="lib-book" onclick="showScreen('detail')">
+              <div class="lib-cover">
+                <div class="book-cover-placeholder cover-1" style="width:100%;height:100%;font-size:9px;">
+                  <span style="font-size:18px; margin-bottom:2px;">&#127754;</span>
+                  Le Vieil<br>Homme et<br>la Mer
+                </div>
+              </div>
+              <div class="lib-title">Le Vieil Homme et la Mer</div>
+              <div class="lib-status">Disponible</div>
+            </div>
+            <div class="lib-book">
+              <div class="lib-cover">
+                <div class="book-cover-placeholder cover-4" style="width:100%;height:100%;font-size:9px;">
+                  <span style="font-size:18px; margin-bottom:2px;">&#128156;</span>
+                  L'Amour aux<br>temps du<br>cholera
+                </div>
+              </div>
+              <div class="lib-title">L'Amour aux temps...</div>
+              <div class="lib-status">Disponible</div>
+            </div>
+            <div class="lib-book">
+              <div class="lib-cover">
+                <div class="book-cover-placeholder cover-3" style="width:100%;height:100%;font-size:9px;">
+                  <span style="font-size:18px; margin-bottom:2px;">&#127795;</span>
+                  La Promesse<br>de l'aube
+                </div>
+                <div class="lent-badge">
+                  <div class="lent-badge-icon">&#128228;</div>
+                  Prete
+                  <div class="lent-to">a Lucas &bull; 5 jours</div>
+                </div>
+              </div>
+              <div class="lib-title">La Promesse de l'aube</div>
+              <div class="lib-status lent">Prete a Lucas</div>
+            </div>
+            <div class="lib-book">
+              <div class="lib-cover">
+                <div class="book-cover-placeholder cover-8" style="width:100%;height:100%;font-size:9px;">
+                  <span style="font-size:18px; margin-bottom:2px;">&#128293;</span>
+                  Fahrenheit<br>451
+                </div>
+              </div>
+              <div class="lib-title">Fahrenheit 451</div>
+              <div class="lib-status">Disponible</div>
+            </div>
+            <div class="lib-book">
+              <div class="lib-cover">
+                <div class="book-cover-placeholder cover-7" style="width:100%;height:100%;font-size:9px;">
+                  <span style="font-size:18px; margin-bottom:2px;">&#128373;</span>
+                  Le Nom<br>de la Rose
+                </div>
+              </div>
+              <div class="lib-title">Le Nom de la Rose</div>
+              <div class="lib-status">Disponible</div>
+            </div>
+            <div class="lib-book">
+              <div class="lib-cover">
+                <div class="book-cover-placeholder cover-2" style="width:100%;height:100%;font-size:9px;">
+                  <span style="font-size:18px; margin-bottom:2px;">&#128139;</span>
+                  Madame<br>Bovary
+                </div>
+                <div class="lent-badge">
+                  <div class="lent-badge-icon">&#128228;</div>
+                  Prete
+                  <div class="lent-to">a Julie &bull; 20 jours</div>
+                </div>
+              </div>
+              <div class="lib-title">Madame Bovary</div>
+              <div class="lib-status lent">Prete a Julie</div>
+            </div>
+            <div class="lib-book">
+              <div class="lib-cover">
+                <div class="book-cover-placeholder cover-5" style="width:100%;height:100%;font-size:9px;">
+                  <span style="font-size:18px; margin-bottom:2px;">&#128165;</span>
+                  Germinal
+                </div>
+              </div>
+              <div class="lib-title">Germinal</div>
+              <div class="lib-status">Disponible</div>
+            </div>
+          </div>
+          <div class="section-gap"></div>
+        </div>
+
+        <button class="fab" onclick="showScreen('scan')">+</button>
+
+        <div class="bottom-nav">
+          <button class="nav-item" onclick="showScreen('home')">
+            <span class="nav-icon">&#127968;</span>
+            <span class="nav-label">Accueil</span>
+          </button>
+          <button class="nav-item" onclick="showScreen('search')">
+            <span class="nav-icon">&#128269;</span>
+            <span class="nav-label">Recherche</span>
+          </button>
+          <button class="nav-item add-btn" onclick="showScreen('scan')">
+            <span class="nav-icon">+</span>
+            <span class="nav-label"></span>
+          </button>
+          <button class="nav-item active" onclick="showScreen('library')">
+            <span class="nav-icon">&#128218;</span>
+            <span class="nav-label">Ma Biblio</span>
+          </button>
+          <button class="nav-item" onclick="showScreen('profile')">
+            <span class="nav-icon">&#128100;</span>
+            <span class="nav-label">Profil</span>
+          </button>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN 8: BORROW REQUEST / CHAT ==================== -->
+    <div class="screen" id="screen-chat">
+      <div class="chat-screen" style="display:flex; flex-direction:column; height:100%;">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <span>&#9679;&#9679;&#9679;&#9679;</span>
+            <span>&#8226;</span>
+            <span>&#128267;</span>
+          </div>
+        </div>
+
+        <div class="chat-header">
+          <button class="chat-back" onclick="showScreen('detail')">&#8592;</button>
+          <div class="chat-avatar">M</div>
+          <div class="chat-user-info">
+            <div class="chat-user-name">Mathieu Renard</div>
+            <div class="chat-book-name">&#128214; Le Petit Prince</div>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-step">
+            <div class="timeline-dot done">&#10003;</div>
+            <div class="timeline-label">Demande</div>
+          </div>
+          <div class="timeline-line done"></div>
+          <div class="timeline-step">
+            <div class="timeline-dot current">&#128172;</div>
+            <div class="timeline-label">Discussion</div>
+          </div>
+          <div class="timeline-line"></div>
+          <div class="timeline-step">
+            <div class="timeline-dot">&#129309;</div>
+            <div class="timeline-label">Echange</div>
+          </div>
+          <div class="timeline-line"></div>
+          <div class="timeline-step">
+            <div class="timeline-dot">&#128218;</div>
+            <div class="timeline-label">Retour</div>
+          </div>
+        </div>
+
+        <div class="messages" style="flex:1; overflow-y:auto;">
+          <div class="msg-date">Aujourd'hui</div>
+
+          <div class="msg msg-sent">
+            Bonjour Mathieu ! J'adorerais emprunter Le Petit Prince. C'est mon livre prefere et je cherche cette edition depuis longtemps.
+            <div class="msg-time">14:23</div>
+          </div>
+
+          <div class="msg msg-received">
+            Bonjour Claire ! Avec plaisir, c'est une belle edition en effet. Tu es dans le 11e aussi ?
+            <div class="msg-time">14:31</div>
+          </div>
+
+          <div class="msg msg-sent">
+            Oui, je suis rue Oberkampf ! On pourrait se retrouver au cafe du coin ?
+            <div class="msg-time">14:33</div>
+          </div>
+
+          <div class="msg msg-received">
+            Parfait ! Demain vers 18h au Cafe Charbon ca te va ? Je serai avec un sac en toile bleu.
+            <div class="msg-time">14:38</div>
+          </div>
+
+          <div class="msg msg-sent">
+            Super, c'est note ! Merci beaucoup Mathieu &#128578;
+            <div class="msg-time">14:40</div>
+          </div>
+        </div>
+
+        <div class="chat-actions">
+          <button class="chat-accept">&#9989; Confirmer l'echange</button>
+          <button class="chat-decline">Annuler</button>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" placeholder="Ecrire un message..." readonly>
+          <button class="chat-send" style="color:#fff;">&#10148;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN 9: PROFILE ==================== -->
+    <div class="screen" id="screen-profile">
+      <div class="profile-screen" style="display:flex; flex-direction:column; height:100%;">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <span>&#9679;&#9679;&#9679;&#9679;</span>
+            <span>&#8226;</span>
+            <span>&#128267;</span>
+          </div>
+        </div>
+        <div class="scroll-content" style="padding-bottom:83px;">
+          <div class="profile-hero">
+            <div class="profile-avatar-lg">C</div>
+            <div class="profile-name">Claire Moreau</div>
+            <div class="profile-bio">Lectrice passionnee | Paris 11e<br>Toujours un livre dans le sac !</div>
+
+            <div class="profile-stats">
+              <div class="stat-item">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Livres</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">28</div>
+                <div class="stat-label">Emprunts</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">4.9</div>
+                <div class="stat-label">Note</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">15</div>
+                <div class="stat-label">Partages</div>
+              </div>
+            </div>
+
+            <div class="profile-badges">
+              <div class="badge-item">
+                <div class="badge-icon">&#128214;</div>
+                <div class="badge-name">Lectrice assidue</div>
+              </div>
+              <div class="badge-item">
+                <div class="badge-icon">&#127775;</div>
+                <div class="badge-name">Top partageuse</div>
+              </div>
+              <div class="badge-item">
+                <div class="badge-icon">&#128293;</div>
+                <div class="badge-name">10 echanges</div>
+              </div>
+              <div class="badge-item">
+                <div class="badge-icon">&#129505;</div>
+                <div class="badge-name">Fiable</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Mes livres</div>
+            <div class="profile-books-grid">
+              <div class="profile-book-cover">
+                <div class="book-cover-placeholder cover-6" style="width:100%;height:100%;font-size:8px;">&#127796;</div>
+              </div>
+              <div class="profile-book-cover">
+                <div class="book-cover-placeholder cover-9" style="width:100%;height:100%;font-size:8px;">&#127793;</div>
+              </div>
+              <div class="profile-book-cover">
+                <div class="book-cover-placeholder cover-1" style="width:100%;height:100%;font-size:8px;">&#127754;</div>
+              </div>
+              <div class="profile-book-cover">
+                <div class="book-cover-placeholder cover-4" style="width:100%;height:100%;font-size:8px;">&#128156;</div>
+              </div>
+              <div class="profile-book-cover">
+                <div class="book-cover-placeholder cover-3" style="width:100%;height:100%;font-size:8px;">&#127795;</div>
+              </div>
+              <div class="profile-book-cover">
+                <div class="book-cover-placeholder cover-8" style="width:100%;height:100%;font-size:8px;">&#128293;</div>
+              </div>
+              <div class="profile-book-cover">
+                <div class="book-cover-placeholder cover-7" style="width:100%;height:100%;font-size:8px;">&#128373;</div>
+              </div>
+              <div class="profile-book-cover">
+                <div class="book-cover-placeholder cover-2" style="width:100%;height:100%;font-size:8px;">&#128139;</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <button class="edit-profile-btn">Modifier mon profil</button>
+          </div>
+
+          <div class="section-gap"></div>
+        </div>
+
+        <div class="bottom-nav">
+          <button class="nav-item" onclick="showScreen('home')">
+            <span class="nav-icon">&#127968;</span>
+            <span class="nav-label">Accueil</span>
+          </button>
+          <button class="nav-item" onclick="showScreen('search')">
+            <span class="nav-icon">&#128269;</span>
+            <span class="nav-label">Recherche</span>
+          </button>
+          <button class="nav-item add-btn" onclick="showScreen('scan')">
+            <span class="nav-icon">+</span>
+            <span class="nav-label"></span>
+          </button>
+          <button class="nav-item" onclick="showScreen('library')">
+            <span class="nav-icon">&#128218;</span>
+            <span class="nav-label">Ma Biblio</span>
+          </button>
+          <button class="nav-item active" onclick="showScreen('profile')">
+            <span class="nav-icon">&#128100;</span>
+            <span class="nav-label">Profil</span>
+          </button>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN 10: NOTIFICATIONS ==================== -->
+    <div class="screen" id="screen-notif">
+      <div class="notif-screen" style="display:flex; flex-direction:column; height:100%;">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <span>&#9679;&#9679;&#9679;&#9679;</span>
+            <span>&#8226;</span>
+            <span>&#128267;</span>
+          </div>
+        </div>
+        <div class="scroll-content">
+          <div class="notif-header">
+            <div class="notif-title">Notifications</div>
+            <button class="notif-mark-all">Tout lire</button>
+          </div>
+
+          <div class="notif-list">
+            <!-- Unread notifications -->
+            <div class="notif-item unread" onclick="showScreen('chat')">
+              <div class="notif-icon-wrap notif-icon-request">&#128172;</div>
+              <div class="notif-content">
+                <div class="notif-text"><strong>Thomas Lefebvre</strong> souhaite emprunter <strong>Fahrenheit 451</strong></div>
+                <div class="notif-time">il y a 12 min</div>
+              </div>
+              <div class="notif-unread-dot"></div>
+            </div>
+
+            <div class="notif-item unread">
+              <div class="notif-icon-wrap notif-icon-nearby">&#128205;</div>
+              <div class="notif-content">
+                <div class="notif-text">Nouveau livre pres de chez vous : <strong>Vingt Mille Lieues sous les mers</strong> a 0.5 km</div>
+                <div class="notif-time">il y a 1h</div>
+              </div>
+              <div class="notif-unread-dot"></div>
+            </div>
+
+            <div class="notif-item unread" onclick="showScreen('chat')">
+              <div class="notif-icon-wrap notif-icon-accepted">&#9989;</div>
+              <div class="notif-content">
+                <div class="notif-text"><strong>Mathieu Renard</strong> a accepte votre demande pour <strong>Le Petit Prince</strong></div>
+                <div class="notif-time">il y a 2h</div>
+              </div>
+              <div class="notif-unread-dot"></div>
+            </div>
+
+            <!-- Read notifications -->
+            <div class="notif-item">
+              <div class="notif-icon-wrap notif-icon-reminder">&#9200;</div>
+              <div class="notif-content">
+                <div class="notif-text">Rappel : <strong>L'Etranger</strong> est prete a Sophie depuis 12 jours</div>
+                <div class="notif-time">il y a 5h</div>
+              </div>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon-wrap notif-icon-rating">&#11088;</div>
+              <div class="notif-content">
+                <div class="notif-text"><strong>Julie Fontaine</strong> vous a laisse un avis 5 etoiles</div>
+                <div class="notif-time">Hier</div>
+              </div>
+            </div>
+
+            <div class="notif-item" onclick="showScreen('chat')">
+              <div class="notif-icon-wrap notif-icon-request">&#128172;</div>
+              <div class="notif-content">
+                <div class="notif-text"><strong>Antoine Dupuis</strong> souhaite emprunter <strong>Germinal</strong></div>
+                <div class="notif-time">Hier</div>
+              </div>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon-wrap notif-icon-accepted">&#9989;</div>
+              <div class="notif-content">
+                <div class="notif-text"><strong>La Promesse de l'aube</strong> a ete retourne par Lucas. Merci !</div>
+                <div class="notif-time">il y a 2 jours</div>
+              </div>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon-wrap notif-icon-nearby">&#128205;</div>
+              <div class="notif-content">
+                <div class="notif-text">3 nouveaux livres disponibles dans votre quartier cette semaine</div>
+                <div class="notif-time">il y a 3 jours</div>
+              </div>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon-wrap notif-icon-rating">&#11088;</div>
+              <div class="notif-content">
+                <div class="notif-text"><strong>Sophie Martin</strong> vous a laisse un avis 5 etoiles pour L'Etranger</div>
+                <div class="notif-time">il y a 5 jours</div>
+              </div>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon-wrap notif-icon-reminder">&#9200;</div>
+              <div class="notif-content">
+                <div class="notif-text">N'oubliez pas de noter votre dernier emprunt : <strong>Belle du Seigneur</strong></div>
+                <div class="notif-time">il y a 1 sem.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /iphone-screen -->
+</div><!-- /iphone-frame -->
+
+<div style="margin-top:16px; text-align:center; color:#8a7b6b; font-size:12px;">
+  BiblioShare v1.1.2 &bull; Maquettes UX par Emma Leclerc &bull; ESN Claude &bull; Fevrier 2026
+</div>
+
+<script>
+  // Screen navigation
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+
+    document.querySelectorAll('.screen-selector button').forEach(b => b.classList.remove('active'));
+    const buttons = document.querySelectorAll('.screen-selector button');
+    const screenMap = ['splash','login','home','search','detail','scan','library','chat','profile','notif'];
+    const idx = screenMap.indexOf(name);
+    if (idx >= 0 && buttons[idx]) buttons[idx].classList.add('active');
+  }
+
+  // Onboarding slides
+  let currentSlide = 1;
+  function goSlide(n) {
+    currentSlide = n;
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.getElementById('slide-' + n).classList.add('active');
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === n - 1);
+    });
+  }
+
+  // Auto-advance onboarding slides
+  setInterval(() => {
+    if (document.getElementById('screen-splash').classList.contains('active')) {
+      currentSlide = currentSlide % 3 + 1;
+      goSlide(currentSlide);
+    }
+  }, 3500);
+
+  // Chip toggle
+  document.querySelectorAll('.filter-chips .chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      this.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.library-filters .chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      this.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.condition-chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      this.parentElement.querySelectorAll('.condition-chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
