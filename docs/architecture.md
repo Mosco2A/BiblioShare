@@ -5,7 +5,7 @@
 | Champ | Valeur |
 |---|---|
 | Nom du projet | BiblioShare |
-| Version | 1.0.0 |
+| Version | 1.2.1 |
 | Date de creation | 2026 |
 | Derniere mise a jour | 2026-02-20 |
 | Plateforme | iOS + Android (Flutter) |
@@ -536,6 +536,7 @@ supabase secrets set GOOGLE_BOOKS_API_KEY=AIza... --project-ref osbcejhzxxpdtvbd
 
 | Date | Version | Modifications | Auteur |
 |---|---|---|---|
+| 2026-02-27 | 1.2.1 | Correction appVersion (1.0.0→1.2.1), version SettingsScreen via AppConstants, version ARCHITECTURE.md | Claude Code |
 | 2026-02-22 | 1.2.0 | Fix profil bloquant (SliverFillRemaining→SliverToBoxAdapter) + FAB scanner en bibliotheque + tests acceptance complets (11 tests) | Claude Code |
 | 2026-02-22 | 1.1.1 | Seed data (livres, amis, prets) + fix timeout Supabase + SocialTab dynamique | Claude Code |
 | 2026-02-21 | 1.1.0 | Scanner reel: OCR ML Kit + Google Books API (remplace le fallback demo) | Claude Code |
